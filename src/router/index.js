@@ -20,6 +20,11 @@ const SubjectDetail=(resolve=>{
 		resolve(module)
 	})
 })
+const Channel=(resolve=>{
+	import('components/channel/channel').then( module=> {
+		resolve(module)
+	})
+})
 Vue.use(Router)
 
 export default new Router({
@@ -27,6 +32,7 @@ export default new Router({
 		{ path: '/', redirect: '/bookstore' },
 		{ path: '/bookstore', component: Bookstore },
 		{ path: '/weekHotMain', component: WeekHotMain },
+		{ path: '/channel', component: Channel },
 		{ path: '/subject', component: Subject, children:[
 			{ path: ':id', component: SubjectDetail }
 		] }

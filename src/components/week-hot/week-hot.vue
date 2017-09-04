@@ -1,6 +1,6 @@
 <template>
 <div class="week-hot">
-	<h3>{{title}}</h3>
+	<hot-title :title="title"></hot-title>
 	<div class="week-con">
 		<ul>
 			<li v-for="item in list">
@@ -17,6 +17,7 @@
 
 <script type="text/ecmascript-6">
 import SeeMore from "components/see-more/see-more";
+import HotTitle from "components/hot-title/hot-title";
 export default {
 props: {
 	title: {
@@ -38,7 +39,8 @@ methods: {
 	}
 },
 components: {
-	SeeMore
+	SeeMore,
+	HotTitle
 }
 }
 </script>

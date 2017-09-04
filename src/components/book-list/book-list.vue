@@ -48,6 +48,9 @@ methods: {
 		align-items: center;
 		padding: 10px 15px;
 		@include border-1px($color-background-d)
+		&:last-of-type {
+			@include border-1px($color-background)
+		}
 		figure {
 			flex: 0 0 31%;
 			@include placeholder(31%, 133.3300%);

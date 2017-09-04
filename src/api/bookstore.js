@@ -17,7 +17,14 @@ export function getHotMain(start) {
 		return Promise.reject(err)
 	})
 }
-
+export function getChannel(id) {
+	const url=`/hs/v3/channel/${id}`;
+	return axios(url).then((res) => {
+		return Promise.resolve(res.data)
+	}).catch(err => {
+		return Promise.reject(err)
+	})
+}
 export function getSubject(start) {
 	const url=`/store/v0/ad/persistent?start=${start}&count=10&type=4`;
 	return axios(url).then((res) => {

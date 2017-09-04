@@ -17,7 +17,7 @@
 				</li>
 			</ol>
 		</div>
-		<more @switchList="switchIndexRange(5, sortList)" :more="more"></more>
+		<more @switchList="switchIndexRange(5, sortList)" @selectChannel="selectChannel(more, currentIndex)" :more="more"></more>
 		
 	</div>
 </div>
@@ -65,6 +65,9 @@ methods: {
 		this.currentIndex=index;
 		let ret=this._sortChannel(this.list)
 		this.currentList=ret;
+	},
+	selectChannel(more, currentIndex) {
+		this.$emit('selectChannel', more, currentIndex)
 	},
 	_initList(list) {
 		this.minIndex=0;
@@ -125,6 +128,9 @@ components: {
 				height: 40px;
 				line-height: 40px;
 				@include border-1px($color-background-d);
+				&:last-of-type {
+					@include border-1px($color-background);
+				}
 				span {
 					color: $color-theme-d;
 					padding-right: 8px;

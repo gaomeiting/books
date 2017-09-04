@@ -1,5 +1,6 @@
 
 const state= {
-	subject: {}
+	subject: {},
+	channel: 369
 }
 export default state;

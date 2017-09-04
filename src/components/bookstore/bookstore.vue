@@ -26,9 +26,9 @@
 				</ul>
 			</div>
 			<week-hot :list="weekHot" @seeMore="seeMoreHot"></week-hot>
-			<recommend title="重磅推荐" :list="recList" more="查看全部 &gt;&gt;"></recommend>
-			<favorite title="女生最爱" :list="famaleList" more="女生频道 &gt;&gt;"></favorite>
-			<favorite title="男生最爱" :list="maleList" more="男生频道 &gt;&gt;"></favorite>
+			<recommend title="重磅推荐" :list="recList" more="查看全部 &gt;&gt;" @selectChannel="selectChannel"></recommend>
+			<favorite title="女生最爱" :list="famaleList" @selectChannel="selectChannel" more="女生频道 &gt;&gt;"></favorite>
+			<favorite title="男生最爱" :list="maleList" @selectChannel="selectChannel" more="男生频道 &gt;&gt;"></favorite>
 			<week-hot title="限时免费" :list="timeFree" more="更多限时免费佳作 &gt;&gt;"></week-hot>
 		</div>
 	</scroll>
@@ -52,6 +52,7 @@ import Loading from "base/loading/loading";
 import NoResult from "base/no-result/no-result";
 import { ERR_OK } from "api/config";
 import { getBookstore } from "api/bookstore";
+import {mapMutations} from "vuex";
 export default {
 data() {
 	return {
@@ -82,6 +83,20 @@ methods: {
 	},
 	seeMoreHot() {
 		this.$router.push('/weekHotMain')
+	},
+	selectChannel(more, currentIndex) {
+		if(more.indexOf("女生频道")!==-1) {
+			this.setChannel(370);
+		}
+		else if(more.indexOf("男生频道")!==-1) {
+			this.setChannel(369);
+			
+		}
+		else if(more.indexOf("查看全部")!==-1) {
+			let n=currentIndex===1 ? 369 : 370
+			this.setChannel(n)
+		}
+		this.$router.push('/channel')
 	},
 	_getBookstore() {
 		getBookstore().then((data)=>{
@@ -134,7 +149,10 @@ methods: {
 			ret.push(item.data)
 		})
 		return ret;
-	}
+	},
+	...mapMutations({
+		'setChannel': 'SET_CHANNEL'
+	})
 },
 components: {
 	Scroll,

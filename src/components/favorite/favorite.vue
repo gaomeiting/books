@@ -5,7 +5,7 @@
 		<div class="favorite-list-wrap" v-if="list.length">
 			<book-list :bookList="currentList"></book-list>
 		</div>
-		<more @switchList="switchIndexRange(3, list)" :more="more"></more>
+		<more @switchList="switchIndexRange(3, list)" @selectChannel="selectChannel(more)" :more="more"></more>
 		
 	</div>
 </div>
@@ -42,7 +42,9 @@ watch : {
 	}
 },
 methods: {
-	
+	selectChannel(more) {
+		this.$emit('selectChannel', more)
+	}
 },
 components: {
 	BookList,

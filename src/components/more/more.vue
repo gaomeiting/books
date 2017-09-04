@@ -1,7 +1,7 @@
 <template>
 <h3 class="more">
 	<span @click.stop="switchList">换一换</span>
-	<span>{{ more }}</span>
+	<span @click.stop="selectChannel(more)">{{ more }}</span>
 </h3>
 </template>
 
@@ -16,6 +16,9 @@ export default {
 	methods: {
 		switchList() {
 			this.$emit('switchList')
+		},
+		selectChannel(more) {
+			this.$emit('selectChannel', more)
 		}
 	}
 	
@@ -31,6 +34,7 @@ export default {
 	line-height: 44px;
 	color: $color-text-l;
 	font-size: $font-size-small;
+	@include border-top-1px($color-background-d)
 	span {
 		flex: 1;
 		text-align: center;
