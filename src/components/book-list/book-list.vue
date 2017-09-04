@@ -50,7 +50,7 @@ methods: {
 		@include border-1px($color-background-d)
 		figure {
 			flex: 0 0 31%;
-			@include placeholder(31%);
+			@include placeholder(31%, 133.3300%);
 			box-shadow: none;
 		}
 		.favorite-text {

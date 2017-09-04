@@ -1,16 +1,18 @@
 <template>
+<transition name="fade">
 <div class="hot-main-wrap">
 	<head-title title="本周最火"></head-title>
 	<div class="hot-main">
 		<scroll :data="list" :pullUp="pullUp" @scrollEnd="loadMore" class="book-list-wrap">
 			<div>
 				<book-list :bookList="list"></book-list>
-				<see-more title="查看更多&gt;&gt;" @seeMore="seeMore" v-show="!hasMore"></see-more>
+				<see-more more="更多专题 &gt;&gt;" @seeMore="seeMore" v-show="!hasMore"></see-more>
 				<loading v-show="hasMore"></loading>
 			</div>
 		</scroll>
 	</div>
 </div>
+</transition>
 </template>
 
 <script type="text/ecmascript-6">
@@ -73,7 +75,7 @@ components: {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	z-index: 900;
+	/* background-color: red; */
 	background-color: $color-background;
 	.hot-main {
 		position: fixed;

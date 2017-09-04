@@ -1,26 +1,31 @@
 <template>
+<transition name="fade">
 <div class="hot-main-wrap">
-	<head-title title="本周最火"></head-title>
+	<head-title title="专题书单"></head-title>
 	<div class="hot-main">
 		<scroll :data="list" :pullUp="pullUp" @scrollEnd="loadMore" class="book-list-wrap">
 			<div>
-				<book-list :bookList="list"></book-list>
+				<subject-list :list="list" @linkSubjectDetail='linkSubjectDetail'></subject-list>
 				<see-more title="查看更多&gt;&gt;" @seeMore="seeMore" v-show="!hasMore"></see-more>
 				<loading v-show="hasMore"></loading>
 			</div>
 		</scroll>
 	</div>
+	<router-view></router-view>
 </div>
+</transition>
 </template>
 
 <script type="text/ecmascript-6">
 import HeadTitle from "components/title/title";
-import BookList from "components/book-list/book-list";
+import SubjectList from "components/subject-list/subject-list";
 import Scroll from "base/scroll/scroll";
 import SeeMore from "components/see-more/see-more";
 import Loading from "base/loading/loading";
 import { getSubject } from "api/bookstore";
+import { CreatSubject } from "common/js/subject";
 import { ERR_OK } from "api/config";
+import { mapMutations } from "vuex";
 export default {
 data() {
 	return {
@@ -43,20 +48,35 @@ methods: {
 	seeMore() {
 		console.log(123)
 	},
+	linkSubjectDetail(item) {
+		this.$router.push(`/subject/${item.id}`);
+		this.setSubject(item)
+	},
 	_initSubject(start) {
 		getSubject(start).then(res=>{
 			if(res.result===ERR_OK) {
-				this.list=this.list.concat(res.items)
+				let arr=this._normalizeSubject(res.items);
+				this.list=this.list.concat(arr)
 				this.hasMore=res.more
 			}
 		}).catch(err=>{
 			console.log(err)
 		})
-	}
+	},
+	_normalizeSubject(data) {
+		let ret=[]
+		data.forEach(item => {
+			ret.push(CreatSubject(item))
+		})
+		return ret;
+	},
+	...mapMutations({
+		'setSubject': 'SET_SUBJECT'
+	})
 },
 components: {
 	HeadTitle,
-	BookList,
+	SubjectList,
 	Scroll,
 	Loading,
 	SeeMore

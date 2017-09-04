@@ -1,4 +1,5 @@
 <template>
+<transition name="fade">
 <div class="bookstore">
 	<div class="search-wrap">
 		<i>搜</i>
@@ -35,7 +36,9 @@
 	<div class="load-wrap" v-show="!load">
 		<loading></loading>
 	</div>
+	<router-view></router-view>
 </div>
+</transition>
 </template>
 
 <script type="text/ecmascript-6">
@@ -154,7 +157,6 @@ components: {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	z-index: 900;
 	.search-wrap {
 		position: fixed;
 		top: 0;

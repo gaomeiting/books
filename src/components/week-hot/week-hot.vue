@@ -68,7 +68,7 @@ components: {
 				flex: 0 0 31%;
 				padding-bottom: 8px;
 				figure {
-					@include placeholder(100%)
+					@include placeholder(100%, 133.3300%)
 					margin-bottom: 8px;
 				}
 				p {

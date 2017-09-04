@@ -19,7 +19,15 @@ export function getHotMain(start) {
 }
 
 export function getSubject(start) {
-	const url=`/store/v0/ad/persistent?start=${start}&count=10`;
+	const url=`/store/v0/ad/persistent?start=${start}&count=10&type=4`;
+	return axios(url).then((res) => {
+		return Promise.resolve(res.data)
+	}).catch(err => {
+		return Promise.reject(err)
+	})
+}
+export function getSubjectDetail(id,start) {
+	const url=`/store/v0/fiction/list/${id}?start=${start}&count=10`;
 	return axios(url).then((res) => {
 		return Promise.resolve(res.data)
 	}).catch(err => {

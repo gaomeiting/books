@@ -15,6 +15,11 @@ const Subject=(resolve=>{
 		resolve(module)
 	})
 })
+const SubjectDetail=(resolve=>{
+	import('components/subject-detail/subject-detail').then( module=> {
+		resolve(module)
+	})
+})
 Vue.use(Router)
 
 export default new Router({
@@ -22,6 +27,8 @@ export default new Router({
 		{ path: '/', redirect: '/bookstore' },
 		{ path: '/bookstore', component: Bookstore },
 		{ path: '/weekHotMain', component: WeekHotMain },
-		{ path: '/subject', component: Subject }
+		{ path: '/subject', component: Subject, children:[
+			{ path: ':id', component: SubjectDetail }
+		] }
 	]
 })
