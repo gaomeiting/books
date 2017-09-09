@@ -10,7 +10,7 @@
 				<p>{{item.title}}</p>
 			</li>
 		</ul>
-		<see-more title="查看更多&gt;&gt;" @seeMore="seeMore"></see-more>
+		<see-more title="查看更多&gt;&gt;" @seeMore="seeMore" v-if="checkMore"></see-more>
 	</div>
 </div>
 </template>
@@ -31,6 +31,10 @@ props: {
 	more: {
 		type: String,
 		default: '查看更多'
+	},
+	checkMore: {
+		type: Boolean,
+		default: true
 	}
 },
 methods: {

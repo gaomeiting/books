@@ -25,6 +25,21 @@ const Channel=(resolve=>{
 		resolve(module)
 	})
 })
+const TimeFree=(resolve=>{
+	import('components/time-free-main/time-free-main').then( module=> {
+		resolve(module)
+	})
+})
+const Rank=(resolve=>{
+	import('components/rank/rank').then( module=> {
+		resolve(module)
+	})
+})
+const RankDetail=(resolve=>{
+	import('components/rank-detail/rank-detail').then( module=> {
+		resolve(module)
+	})
+})
 Vue.use(Router)
 
 export default new Router({
@@ -33,6 +48,10 @@ export default new Router({
 		{ path: '/bookstore', component: Bookstore },
 		{ path: '/weekHotMain', component: WeekHotMain },
 		{ path: '/channel', component: Channel },
+		{ path: '/timeFree', component: TimeFree },
+		{ path: '/rank', component: Rank, children: [
+			{path: ':id', component: RankDetail}
+		] },
 		{ path: '/subject', component: Subject, children:[
 			{ path: ':id', component: SubjectDetail }
 		] }

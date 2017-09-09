@@ -41,3 +41,27 @@ export function getSubjectDetail(id,start) {
 		return Promise.reject(err)
 	})
 }
+export function getTimeFree() {
+	const url='hs/v3/channel/371';
+	return axios(url).then((res) => {
+		return Promise.resolve(res.data)
+	}).catch(err => {
+		return Promise.reject(err)
+	})
+}
+export function getRank() {
+	const url='/store/v0/ad/ranks';
+	return axios(url).then((res) => {
+		return Promise.resolve(res.data)
+	}).catch(err => {
+		return Promise.reject(err)
+	})
+}
+export function getRankDetail(start, id) {
+	const url=`/store/v0/fiction/rank?start=${start}&count=10&r=${id}`;
+	return axios(url).then((res) => {
+		return Promise.resolve(res.data)
+	}).catch(err => {
+		return Promise.reject(err)
+	})
+}

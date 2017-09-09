@@ -33,13 +33,13 @@ export default {
 @import "~common/scss/variable";
 @import "~common/scss/mixin";
 .tab {
-	background: $color-background-d;
+	background: $color-background;
 	height: 44px;
 	line-height: 44px;
 	font-size: $font-size-medium-x;
 	display: flex;
 	text-align: center;
-	@include border-1px($color-highlight-background);
+	/* @include border-1px($color-highlight-background); */
 	p {
 		flex: 1;
 		span {

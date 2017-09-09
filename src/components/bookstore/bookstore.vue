@@ -19,7 +19,7 @@
 			</div>
 			<div class="customs-wrap" v-if="customs">
 				<ul>
-					<li v-for="item in customs">
+					<li v-for="(item,index) in customs" :key="index" @click.stop="tolink(index)">
 						<img v-lazy="item.url" alt="">
 						<span> {{ item.ad_name }} </span>
 					</li>
@@ -29,7 +29,7 @@
 			<recommend title="重磅推荐" :list="recList" more="查看全部 &gt;&gt;" @selectChannel="selectChannel"></recommend>
 			<favorite title="女生最爱" :list="famaleList" @selectChannel="selectChannel" more="女生频道 &gt;&gt;"></favorite>
 			<favorite title="男生最爱" :list="maleList" @selectChannel="selectChannel" more="男生频道 &gt;&gt;"></favorite>
-			<week-hot title="限时免费" :list="timeFree" more="更多限时免费佳作 &gt;&gt;"></week-hot>
+			<week-hot title="限时免费" :list="timeFree" @seeMore="seeMoreFree" more="更多限时免费佳作 &gt;&gt;"></week-hot>
 		</div>
 	</scroll>
 	</div>
@@ -84,6 +84,9 @@ methods: {
 	seeMoreHot() {
 		this.$router.push('/weekHotMain')
 	},
+	seeMoreFree() {
+		this.$router.push('/timeFree')
+	},
 	selectChannel(more, currentIndex) {
 		if(more.indexOf("女生频道")!==-1) {
 			this.setChannel(370);
@@ -97,6 +100,24 @@ methods: {
 			this.setChannel(n)
 		}
 		this.$router.push('/channel')
+	},
+	tolink(index) {
+		switch(index) {
+			case 0: 
+			this.$router.push('/timeFree');
+			break;
+			case 1: 
+			this.setChannel(370)
+			this.$router.push('/channel');
+			break;
+			case 2: 
+			this.setChannel(369)
+			this.$router.push('/channel');
+			break;
+			case 4: 
+			this.$router.push('/rank');
+			break;
+		}
 	},
 	_getBookstore() {
 		getBookstore().then((data)=>{
