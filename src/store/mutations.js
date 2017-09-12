@@ -10,6 +10,12 @@ const mutations = {
 	},
 	[types.SET_RANK](state, rank) {
 		state.rank=rank
+	},
+	[types.SET_CATEGORY](state, category) {
+		state.category=category
+	},
+	[types.SET_CURRENT_CATEGORY](state, json) {
+		state.currentCategory=json
 	}
 }
 export default mutations

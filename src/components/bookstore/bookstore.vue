@@ -114,6 +114,9 @@ methods: {
 			this.setChannel(369)
 			this.$router.push('/channel');
 			break;
+			case 3: 
+			this.$router.push('/category');
+			break;
 			case 4: 
 			this.$router.push('/rank');
 			break;

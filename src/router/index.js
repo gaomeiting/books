@@ -40,6 +40,17 @@ const RankDetail=(resolve=>{
 		resolve(module)
 	})
 })
+
+const Category=(resolve=>{
+	import('components/category/category').then( module=> {
+		resolve(module)
+	})
+})
+const CategoryDetail=(resolve=>{
+	import('components/category-detail/category-detail').then( module=> {
+		resolve(module)
+	})
+})
 Vue.use(Router)
 
 export default new Router({
@@ -49,6 +60,9 @@ export default new Router({
 		{ path: '/weekHotMain', component: WeekHotMain },
 		{ path: '/channel', component: Channel },
 		{ path: '/timeFree', component: TimeFree },
+		{ path: '/category', component: Category, children: [
+			{path: ':id', component: CategoryDetail}
+		] },
 		{ path: '/rank', component: Rank, children: [
 			{path: ':id', component: RankDetail}
 		] },

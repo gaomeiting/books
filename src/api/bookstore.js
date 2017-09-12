@@ -65,3 +65,18 @@ export function getRankDetail(start, id) {
 		return Promise.reject(err)
 	})
 }
+export function getCategory(url) {
+	return axios(url).then((res) => {
+		return Promise.resolve(res.data)
+	}).catch(err => {
+		return Promise.reject(err)
+	})
+}
+export function getCategoryDetail(id, start, name) {
+	const url=`/store/v0/fiction/category/${id}?start=${start}&count=10&${name}=1`
+	return axios(url).then((res) => {
+		return Promise.resolve(res.data)
+	}).catch(err => {
+		return Promise.reject(err)
+	})
+}
