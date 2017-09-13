@@ -1,8 +1,8 @@
 <template>
-<transition name="fade">
+<transition name="fade" mode="out-in">
 <div class="bookstore">
 	<div class="search-wrap">
-		<i>搜</i>
+		<i class="iconfont icon-sousuo"></i>
 		<!-- <search-box placeholder="请输入书名/作者/关键字"></search-box> -->
 	</div>
 	<div class="bookstore-con-wrap" v-show="load">
@@ -29,7 +29,7 @@
 			<recommend title="重磅推荐" :list="recList" more="查看全部 &gt;&gt;" @selectChannel="selectChannel"></recommend>
 			<favorite title="女生最爱" :list="famaleList" @selectChannel="selectChannel" more="女生频道 &gt;&gt;"></favorite>
 			<favorite title="男生最爱" :list="maleList" @selectChannel="selectChannel" more="男生频道 &gt;&gt;"></favorite>
-			<week-hot title="限时免费" :list="timeFree" @seeMore="seeMoreFree" more="更多限时免费佳作 &gt;&gt;"></week-hot>
+			<week-hot title="限时免费" :list="timeFree" :hasFree="hasFree" @seeMore="seeMoreFree" more="更多限时免费佳作 &gt;&gt;"></week-hot>
 		</div>
 	</scroll>
 	</div>
@@ -63,7 +63,8 @@ data() {
 		recList: [],
 		famaleList: [],
 		maleList: [],
-		load: false
+		load: false,
+		hasFree: true
 	}
 },
 created() {

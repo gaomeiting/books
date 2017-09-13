@@ -1,5 +1,5 @@
 <template>
-<transition name="fade">
+<transition name="slide" mode="out-in">
 <div class="rank-detail-wrap">
 	<head-title :title="rank[3]"></head-title>
 	<div class="rank-detail" v-if="list.length">

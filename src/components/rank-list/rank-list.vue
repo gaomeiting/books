@@ -4,6 +4,7 @@
 	<li class="item" v-for="(item, index) in list">
 		<figure>
 			<img v-lazy="item.cover">
+			<i class="iconfont icon-paixing icon" :class="'icon_'+index" v-if="index<3"><span>{{index+1}}</span></i>
 		</figure>
 		<div class="favorite-text">
 			<h4>{{item.title}}</h4>
@@ -64,7 +65,30 @@ methods: {
 			flex: 0 0 31%;
 			@include placeholder(31%, 133.3300%);
 			box-shadow: none;
+			.icon {
+				position: absolute;
+				font-size: $font-size-large-x;
+				color: $color-theme;
+				&.icon_0 {
+					opacity: 1;
+				}
+				&.icon_1 {
+					opacity: 0.8;
+				}
+				&.icon_2 {
+					opacity: 0.4;
+				}
+				>span {
+					position: absolute;
+					left: 50%;
+					top: 50%;
+					transform: translate3d(-50%, -60%, 0);
+					font-size: $font-size-medium;
+					color: $color-background;
+				}
+			}
 		}
+		
 		.favorite-text {
 			flex: 1;
 			font-size: $font-size-small;

@@ -1,5 +1,5 @@
 <template>
-<transition name="fade">
+<transition name="slide" mode="out-in">
 <div class="rank-wrap">
 	<head-title title=""></head-title>
 	<scroll :data="list" class="rank">

@@ -6,6 +6,7 @@
 			<li v-for="item in list">
 				<figure>
 					<img v-lazy="item.cover">
+					<i v-if="hasFree" class="iconfont icon-xianmian icon"></i>
 				</figure>
 				<p>{{item.title}}</p>
 			</li>
@@ -35,6 +36,10 @@ props: {
 	checkMore: {
 		type: Boolean,
 		default: true
+	},
+	hasFree: {
+		type: Boolean,
+		default: false
 	}
 },
 methods: {
@@ -76,6 +81,11 @@ components: {
 				figure {
 					@include placeholder(100%, 133.3300%)
 					margin-bottom: 8px;
+					>.icon {
+						position: absolute;
+						right: 0;
+						color: $color-sub-theme;
+					}
 				}
 				p {
 					font-size: $font-size-medium;

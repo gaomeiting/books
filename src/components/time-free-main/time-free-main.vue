@@ -10,7 +10,7 @@
 						<hot-title :title="titles[index ]"></hot-title>
 						<book-list :bookList="item"></book-list>
 					</div>
-					<week-hot :list="item" :title="titles[index]" :checkMore="checkMore" v-else></week-hot>
+					<week-hot :list="item" :title="titles[index]" :hasFree="index==0" :checkMore="checkMore" v-else></week-hot>
 				</div>
 				<loading v-show="loading"></loading>
 			</div>
@@ -36,7 +36,7 @@ data() {
 		list: [],
 		titles: [],
 		loading: true,
-		checkMore: false
+		checkMore: false,
 	}
 },
 created() {

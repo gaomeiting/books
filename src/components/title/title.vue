@@ -1,8 +1,8 @@
 <template>
 <div class="title">
-	<i @click.stop="back">返回</i>
+	<i @click.stop="back" class="iconfont icon-fanhui"></i>
 	<span>{{title}}</span>
-	<i>主页</i>
+	<i @click.stop="home" class="iconfont icon-zhuye"></i>
 </div>
 </template>
 
@@ -17,6 +17,9 @@ props: {
 methods: {
 	back() {
 		this.$router.back()
+	},
+	home() {
+		this.$router.push('/bookstore')
 	}
 }
 }
@@ -36,7 +39,7 @@ methods: {
 	align-items: center;
 	font-size: $font-size-medium-x;
 	i {
-		padding: 0 15px;
+		padding: 4px 15px;
 	}
 	span {
 		flex: 1;

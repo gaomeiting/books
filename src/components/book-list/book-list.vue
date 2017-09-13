@@ -47,7 +47,7 @@ methods: {
 		display: flex;
 		align-items: center;
 		padding: 10px 15px;
-		@include border-1px($color-background-d)
+		@include border-1px($color-background-d);
 		&:last-of-type {
 			@include border-1px($color-background)
 		}
