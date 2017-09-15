@@ -22,7 +22,7 @@ props: {
 	font-size: $font-size-medium-x;
 	color: $color-text-ll;
 	text-indent: 15px;
-	border-left: 5px solid $color-theme-d;
+	border-left: 3px solid $color-theme-d;
 	@include border-1px($color-highlight-background)
 }
 

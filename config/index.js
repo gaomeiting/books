@@ -42,6 +42,13 @@ module.exports = {
             pathRewrite:{
                 '^/store':''
             }
+        },
+        '/drm':{
+            target:'http://dushu.xiaomi.com/drm',
+            changeOrigin:true,
+            pathRewrite:{
+                '^/drm':''
+            }
         }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

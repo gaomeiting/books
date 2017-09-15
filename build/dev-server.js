@@ -24,11 +24,13 @@ var proxyTable = config.dev.proxyTable
 var app = express()
 var compiler = webpack(webpackConfig)
 var apiRoutes= express.Router()
-apiRoutes.get('/getDiscList', (req,res) => {
-  axios.get('https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg',{
+//http://html.read.duokan.com/mfsv2/secure/fdsc3/60009/file
+apiRoutes.get('/multi_link', (req,res) => {
+  axios.get('http://dushu.xiaomi.com/drm/v0/fiction/multi_link',{
     headers: {
-      referer: 'http://y.qq.com',
-      host: 'y.qq.com'
+      referer: 'http://dushu.xiaomi.com/',
+      host: 'dushu.xiaomi.com',
+      cookie:'app_id=mi_wap; build=8888; device_id=D950UOLK44ZTJ58R; user_type=2; device_hash=48897f6e75b43a724ab6726b86c2fad2; Hm_lvt_a1d10542fc664b658c3ce982b1cf4937=1505362358; Hm_lpvt_a1d10542fc664b658c3ce982b1cf4937=1505362358'
     },
     params: req.query
   }).then((response) => {
@@ -37,23 +39,7 @@ apiRoutes.get('/getDiscList', (req,res) => {
     console.log(err)
   })
 })
-apiRoutes.get('/lyric', (req,res) => {
-  axios.get('https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg',{
-    headers: {
-      referer: 'http://y.qq.com',
-      host: 'y.qq.com'
-    },
-    params: req.query
-  }).then((response) => {
-    let ret=response.data
-    if(typeof(ret)=="string") {
-      let matches= ret.match(/^\w+\(({[^()]+})\)$/)
-       res.json(JSON.parse(matches[1]))
-    }
-  }).catch((err) => {
-    console.log(err)
-  })
-})
+
 app.use('/api', apiRoutes)
 
 var devMiddleware = require('webpack-dev-middleware')(compiler, {

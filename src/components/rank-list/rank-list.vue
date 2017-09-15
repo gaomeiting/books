@@ -1,7 +1,7 @@
 <template>
 <!-- <transition name="slide" transition-mode="out-in"> -->
 <ul class="rank-list">
-	<li class="item" v-for="(item, index) in list">
+	<li class="item" v-for="(item, index) in list" @click.stop="selectBook(item)">
 		<figure>
 			<img v-lazy="item.cover">
 			<i class="iconfont icon-paixing icon" :class="'icon_'+index" v-if="index<3"><span>{{index+1}}</span></i>
@@ -44,6 +44,9 @@ methods: {
 		let count=this.wordCount(num);
 		let str=!this.type ? `本周${count}W人在读` : this.type===1 ? `本月${count}W人在读` : `共有${count}W人读过`
 		return str;
+	},
+	selectBook(item) {
+		this.$emit('selectBook', item);
 	}
 }	
 }

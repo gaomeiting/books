@@ -7,3 +7,9 @@ export const savedCategoryData=function({commit}, {hash, female, male}) {
 	}
 	commit(types.SET_CATEGORY,category)
 }
+export const savedCurrentBookData=function({commit, state}, arr) {
+	let currentBook=state.currentBook;
+	if(currentBook.data && currentBook.data.length)  return;
+	let ret=Object.assign({},currentBook, {data: arr});
+	commit(types.SET_CURRENT_BOOK, ret)
+}

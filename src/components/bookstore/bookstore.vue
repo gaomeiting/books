@@ -196,7 +196,7 @@ components: {
 @import "~common/scss/variable";
 .bookstore {
 	position: fixed;
-	top: 44px;
+	top: 46px;
 	bottom: 0;
 	left: 0;
 	right: 0;
@@ -208,7 +208,7 @@ components: {
 	}
 	.bookstore-con-wrap, .result-wrap {
 		position: fixed;
-		top: 44px;
+		top: 46px;
 		bottom: 0;
 		left: 0;
 		right: 0;

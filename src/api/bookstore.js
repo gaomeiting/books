@@ -1,4 +1,4 @@
-import { jsonp } from "common/js/jsonp";
+import jsonp from "jsonp";
 import { commonParams, options } from "api/config";
 import axios from 'axios';
 export function getBookstore() {
@@ -80,3 +80,42 @@ export function getCategoryDetail(id, start, name) {
 		return Promise.reject(err)
 	})
 }
+export function getBookDetail(id) {
+	const url=`/hs/v0/android/fiction/book/${id}`
+	return axios(url).then((res) => {
+		return Promise.resolve(res.data)
+	}).catch(err => {
+		return Promise.reject(err)
+	})
+}
+export function getDownBook(fiction_id) {
+	let url ="/api/multi_link";
+	let data= {
+		fiction_id,
+		format: 'jsonp'
+	}
+	return axios( url, {
+		params: data
+	}).then((res)=> {
+		return Promise.resolve(res.data)
+	}).catch(err => {
+		return Promise.reject(err)
+	});
+}
+
+export function ajaxDownBook(url, opts) {
+	return new Promise((resolve, reject) => {
+		jsonp(url, opts, (err, data) => {
+			if(!err){
+				resolve(data);
+			}
+			else {
+				reject(err)
+			}
+		})
+	});
+}
+
+//http://dushu.xiaomi.com/store/v0/fiction/id_list?ids=352876&owner=0%2C2
+//http://dushu.xiaomi.com/store/v0/fiction/detail/352876?chapter_id=0
+//http://dushu.xiaomi.com/drm/v0/fiction/link?fiction_id=352876&chapter_id=0&format=jsonp

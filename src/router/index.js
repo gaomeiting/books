@@ -51,6 +51,11 @@ const CategoryDetail=(resolve=>{
 		resolve(module)
 	})
 })
+const BookDetail=(resolve=>{
+	import('components/book-detail/book-detail').then( module=> {
+		resolve(module)
+	})
+})
 Vue.use(Router)
 
 export default new Router({
@@ -60,6 +65,7 @@ export default new Router({
 		{ path: '/weekHotMain', component: WeekHotMain },
 		{ path: '/channel', component: Channel },
 		{ path: '/timeFree', component: TimeFree },
+		{ path: '/bookDetail', component: BookDetail },
 		{ path: '/category', component: Category, children: [
 			{path: ':id', component: CategoryDetail}
 		] },

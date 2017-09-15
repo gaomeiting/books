@@ -4,6 +4,7 @@ const state= {
 	channel: 369,
 	rank: [],
 	category: loadCategory(),
-	currentCategory: {}
+	currentCategory: {},
+	currentBook: {}
 }
 export default state;

@@ -16,6 +16,9 @@ const mutations = {
 	},
 	[types.SET_CURRENT_CATEGORY](state, json) {
 		state.currentCategory=json
+	},
+	[types.SET_CURRENT_BOOK](state, json) {
+		state.currentBook=json
 	}
 }
 export default mutations

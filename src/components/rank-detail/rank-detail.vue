@@ -8,7 +8,7 @@
 		</div>
 		<scroll :data="list" class="rank-list-wrap" :pullUp="pullUp" @scrollEnd="loadMore">
 			<div>
-				<rank-list :list="list" :type="currentIndex"></rank-list>
+				<rank-list :list="list" :type="currentIndex" @selectBook="selectBook"></rank-list>
 				<loading v-show="hasMore"></loading>
 				<div class="result-wrap">
 					<no-result v-show="!hasMore && !list.length" title="小编努力种菜中~·"></no-result>
@@ -27,7 +27,7 @@ import Scroll from "base/scroll/scroll";
 import RankList from "components/rank-list/rank-list";
 import Loading from "base/loading/loading";
 import NoResult from "base/no-result/no-result";
-import {mapGetters} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import {getRankDetail} from "api/bookstore";
 import {ERR_OK} from "api/config";
 export default {
@@ -36,7 +36,7 @@ data() {
 		list: [],
 		start: 0,
 		currentIndex: 0,
-		items: [{name: '周榜'}, {name: '月榜'}, {name: '总榜'}],
+		items: [{name: '日榜'}, {name: '周榜'}, {name: '月榜'}],
 		hasMore: true,
 		pullUp: true
 	} 
@@ -45,7 +45,7 @@ created() {
 	this._initedRankDetail()	
 },
 computed: {
-...mapGetters(['rank'])
+...mapGetters(['rank', 'currentBook'])
 },
 methods: {
 	selectItem(i) {
@@ -60,6 +60,12 @@ methods: {
 		}
 		this.start+=10;
 		this._ajaxData();
+	},
+	selectBook(item) {
+		this.$router.push('/bookDetail')
+		if(item.fiction_id==this.currentBook.fiction_id) return;
+		this.setCurrentBook(item);
+		
 	},
 	_initedRankDetail() {
 		if(!this.rank[1]) {
@@ -80,7 +86,10 @@ methods: {
 		}).catch(err=>{
 			console.log(err)
 		})
-	}	
+	},
+	...mapMutations({
+		'setCurrentBook': 'SET_CURRENT_BOOK'
+	})	
 },
 components: {
 	HeadTitle,
