@@ -7,9 +7,26 @@ export const savedCategoryData=function({commit}, {hash, female, male}) {
 	}
 	commit(types.SET_CATEGORY,category)
 }
-export const savedCurrentBookData=function({commit, state}, arr) {
+export const savedCurrentRead=function({commit, state}) {
 	let currentBook=state.currentBook;
-	if(currentBook.data && currentBook.data.length)  return;
-	let ret=Object.assign({},currentBook, {data: arr});
-	commit(types.SET_CURRENT_BOOK, ret)
+	let fiction_id=state.currentBook.fiction_id;
+	//chapter_id 从缓存中拿到；
+	let chapter_id=0;
+	let ret={
+		fiction_id,
+		chapter_id
+	};
+	commit(types.SET_CURRENT_READ, ret)
+}
+export const savedCurrentBookData=function({commit, state}, arr) {
+	let currentRead=state.currentRead;
+	if(currentRead.data && currentRead.data.length)  return;
+	let ret=Object.assign({},currentRead, {data: arr});
+	commit(types.SET_CURRENT_READ, ret)
+}
+export const savedCurrentBookCatalog=function({commit, state}, arr) {
+	let currentRead=state.currentRead;
+	if(currentRead.catalog && currentRead.catalog.length)  return;
+	let ret=Object.assign({},currentRead, {catalog: arr});
+	commit(types.SET_CURRENT_READ, ret)
 }

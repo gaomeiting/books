@@ -56,6 +56,16 @@ const BookDetail=(resolve=>{
 		resolve(module)
 	})
 })
+const Read=(resolve=>{
+	import('components/read/read').then( module=> {
+		resolve(module)
+	})
+})
+const Catalog=(resolve=>{
+	import('components/book-catalog/book-catalog').then( module=> {
+		resolve(module)
+	})
+})
 Vue.use(Router)
 
 export default new Router({
@@ -74,6 +84,9 @@ export default new Router({
 		] },
 		{ path: '/subject', component: Subject, children:[
 			{ path: ':id', component: SubjectDetail }
-		] }
+		] },
+		{ path: '/read', component: Read, children: [
+			{ path: 'catalog', component: Catalog}
+		]}
 	]
 })

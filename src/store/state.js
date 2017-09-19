@@ -5,6 +5,7 @@ const state= {
 	rank: [],
 	category: loadCategory(),
 	currentCategory: {},
-	currentBook: {}
+	currentBook: {},
+	currentRead: {chapter_id: 0}
 }
 export default state;

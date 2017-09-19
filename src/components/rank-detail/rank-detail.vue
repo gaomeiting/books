@@ -27,7 +27,7 @@ import Scroll from "base/scroll/scroll";
 import RankList from "components/rank-list/rank-list";
 import Loading from "base/loading/loading";
 import NoResult from "base/no-result/no-result";
-import {mapGetters, mapMutations} from "vuex";
+import {mapGetters, mapMutations, mapActions} from "vuex";
 import {getRankDetail} from "api/bookstore";
 import {ERR_OK} from "api/config";
 export default {
@@ -65,6 +65,7 @@ methods: {
 		this.$router.push('/bookDetail')
 		if(item.fiction_id==this.currentBook.fiction_id) return;
 		this.setCurrentBook(item);
+		this.savedCurrentRead();
 		
 	},
 	_initedRankDetail() {
@@ -89,7 +90,8 @@ methods: {
 	},
 	...mapMutations({
 		'setCurrentBook': 'SET_CURRENT_BOOK'
-	})	
+	}),
+	...mapActions(['savedCurrentRead'])	
 },
 components: {
 	HeadTitle,

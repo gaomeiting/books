@@ -39,7 +39,20 @@ apiRoutes.get('/multi_link', (req,res) => {
     console.log(err)
   })
 })
-
+apiRoutes.get('/catalog', (req,res) => {
+  console.log(req.query)
+  axios.get(`http://dushu.xiaomi.com/store/v0/fiction/detail/${req.query.fiction_id}`,{
+    headers: {
+      referer: 'http://dushu.xiaomi.com/',
+      host: 'dushu.xiaomi.com',
+      cookie:'Hm_lvt_a1d10542fc664b658c3ce982b1cf4937=1505707016,1505784061; Hm_lpvt_a1d10542fc664b658c3ce982b1cf4937=1505784104; app_id=mi_wap; build=8888; device_id=D950G879582KE5EJ; user_type=2; device_hash=f5a80953dd67a2389b061ca1c31add10'
+    }
+  }).then((response) => {
+    res.json(response.data)
+  }).catch((err) => {
+    console.log(err)
+  })
+})
 app.use('/api', apiRoutes)
 
 var devMiddleware = require('webpack-dev-middleware')(compiler, {

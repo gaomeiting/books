@@ -88,10 +88,11 @@ export function getBookDetail(id) {
 		return Promise.reject(err)
 	})
 }
-export function getDownBook(fiction_id) {
+export function getDownBook(fiction_id, chapter_id) {
 	let url ="/api/multi_link";
 	let data= {
 		fiction_id,
+		chapter_id,
 		format: 'jsonp'
 	}
 	return axios( url, {
@@ -115,7 +116,26 @@ export function ajaxDownBook(url, opts) {
 		})
 	});
 }
-
-//http://dushu.xiaomi.com/store/v0/fiction/id_list?ids=352876&owner=0%2C2
 //http://dushu.xiaomi.com/store/v0/fiction/detail/352876?chapter_id=0
 //http://dushu.xiaomi.com/drm/v0/fiction/link?fiction_id=352876&chapter_id=0&format=jsonp
+export function startReadUrl( fiction_id, chapter_id) {
+	const url=`http://dushu.xiaomi.com/drm/v0/fiction/link?fiction_id=${fiction_id}&chapter_id=${chapter_id}&format=jsonp`
+	return axios(url).then(res=>{
+		return new Promis.resolve(res.data)
+	}).catch(err=>{
+		return new Promis.reject(err)
+	})
+}
+export function getCatalog(fiction_id) {
+	const url=`/api/catalog`
+	let data={
+		fiction_id,
+	}
+	return axios(url, {
+		params: data
+	}).then(res=>{
+		return Promise.resolve(res.data);
+	}).catch(err=>{
+		return Promise.reject(err)
+	})
+}

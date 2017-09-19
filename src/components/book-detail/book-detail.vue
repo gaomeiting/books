@@ -69,7 +69,7 @@ import Scroll from "base/scroll/scroll";
 import SeeMore from "components/see-more/see-more";
 import WeekList from "components/week-list/week-list";
 import BottomTip from "base/bottom-tip/bottom-tip";
-import {getBookDetail, getDownBook, ajaxDownBook} from "api/bookstore";
+import {getBookDetail, getDownBook, ajaxDownBook, startReadUrl, getCatalog} from "api/bookstore";
 import {ERR_OK} from "api/config";
 import {mapGetters, mapMutations, mapActions} from "vuex";
 import {formatDate} from "common/js/data";
@@ -79,12 +79,12 @@ data() {
 		content: "",
 		totalBooks: 0,
 		list: [],
-		catchCurrentList: [],
 		count: 0,
 		len: 0,
 		showCount: false,
 		currentBookContent: [],
-		hasLoaded: false
+		hasLoaded: false,
+		chapter_id: 0
 	}
 },
 activated() {
@@ -126,7 +126,7 @@ computed: {
 	loadTxt() {
 		return this.count ? `${this.count} / ${this.len}` : '下载'
 	},
-	...mapGetters(['currentBook'])
+	...mapGetters(['currentBook', 'currentRead'])
 },
 
 methods: {
@@ -150,22 +150,16 @@ methods: {
 		}
 	},
 	downBook() {
-		if(this.currentBook.data&&this.currentBook.data.length) {
+		let id=this.currentRead.fiction_id;
+		this._getCatalog(id);
+		if(this.currentRead.data&&this.currentRead.data.length) {
 			this.hasLoaded=true;
 			this.bottomTipShow()
 			return;
 		}
 		this.hasLoaded=false;
-		let id=this.currentBook.fiction_id;
-		getDownBook(id).then(res=>{
-			if(res.result===ERR_OK) {
-				this.len=res.data.length;
-				this._ajaxDownBook(res.data)
-				this.catchCurrentList=res.data
-			}
-		}).catch(err => {
-			console.log(err);
-		})
+		this._getDownBook(id);
+		
 	},
 	bottomTipShow() {
 		this.$refs.bottomTip.show()
@@ -174,17 +168,51 @@ methods: {
 		this.$refs.bottomTip.hide()
 	},
 	startRead() {
-		if(this.currentBook.data && this.currentBook.data.length) {
+		//获取目录
+		let fiction_id=this.currentRead.fiction_id;
+		this._getCatalog(fiction_id);
+		if(this.currentRead.data && this.checkIndex()!==-1) {
 			//从数据中读取；
-			window.alert(this.currentBook.data.length)
+			console.log("从数据中读取")
+			this.$router.push('/read')
 		}
 		else {
 			//发送请求；
-			window.alert("发送请求")
+			//window.alert("发送请求")
+			let chapter_id=this.currentRead.chapter_id;
+			this._getDownBook(fiction_id, chapter_id);
 		}
 	},
+	checkIndex() {
+		let list=this.currentRead.multi_link;
+		return list.findIndex((item)=>{
+			return item.c==this.currentRead.chapter_id
+		})
+	},
+	_getCatalog(id) {
+		if(this.currentRead.catelog) return;
+		getCatalog(id).then(res=>{
+			//console.log(res.result)
+			if(res.result===ERR_OK) {
+				this.savedCurrentBookCatalog(res.item.toc);
+			}
+		}).catch(err=>{
+			console.log(err)
+		})
+	},
+	_getDownBook(fiction_id, chapter_id) {
+		getDownBook(fiction_id, chapter_id).then(res=>{
+			if(res.result===ERR_OK) {
+				this.len=res.data.length;
+				this.currentRead.multi_link=res.data
+				this._ajaxDownBook(res.data)
+			}
+		}).catch(err => {
+			console.log(err);
+		})
+	},
 	_ajaxDownBook(list) {
-		this.count=0;	
+		this.count=0;
 		list.forEach((item)=> {
 			this.url=item.url;
 			this._loopAjax(this.url)
@@ -194,10 +222,15 @@ methods: {
 		if(this.count>=this.len) {
 			//加入弹框；
 			this.savedCurrentBookData(this.currentBookContent)
+			if(this.len>1) {
+				this.bottomTipShow()
+			}
+			else {
+				this.$router.push('/read')
+			}
+			this.currentBookContent=[];
 			this.count=0;
 			this.len=0;
-			this.currentBookContent=[];
-			this.bottomTipShow()
 			return;
 		}
 		ajaxDownBook(url, {name: 'duokan_fiction_chapter'}).then(res=>{
@@ -225,7 +258,7 @@ methods: {
 	...mapMutations({
 		'setCurrentBook' : 'SET_CURRENT_BOOK'
 	}),
-	...mapActions(['savedCurrentBookData'])
+	...mapActions(['savedCurrentBookData', 'savedCurrentBookCatalog'])
 },
 components: {
 	HeadTitle,

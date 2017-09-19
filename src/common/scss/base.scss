@@ -7,12 +7,19 @@ body, html {
 	-webkit-tap-highlight-color: transparent;
 	background: $color-background;
 	color: $color-text;
+	font-size: $font-size-medium;
 }
 .slide-enter-active, .slide-leave-active {
 	transition: all .3s ease-in-out;	
 }
 .slide-enter, .slide-leave-to {
 	transform: translate3d(100%, 0, 0);
+}
+.slideLeft-enter-active, .slideLeft-leave-active {
+	transition: all .3s ease-in-out;	
+}
+.slideLeft-enter, .slideLeft-leave-to {
+	transform: translate3d(-100%, 0, 0);
 }
 .slideLi-enter-active, .slideLi-leave-active {
 	transition: all .3s linear;	
