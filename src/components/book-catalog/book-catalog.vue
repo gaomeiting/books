@@ -4,7 +4,7 @@
 	<head-title></head-title>
 	<scroll :data="currentRead.catalog" class="book-catalog">
 		<ul>
-			<li v-for="item in currentRead.catalog" :class="{'active' : item.chapter_id===currentRead.chapter_id}" :key="item.html_sha1">
+			<li v-for="item in currentRead.catalog" :class="{'active' : item.chapter_id===currentRead.chapter_id}" :key="item.html_sha1" @click.stop="selectCurrentCatalog(item)">
 				<span>{{item.title}}</span>
 				<strong :class="{'active' : item.chapter_id===currentRead.chapter_id}" v-if="item.free">免费</strong>
 			</li>
@@ -19,13 +19,13 @@ import HeadTitle from "components/title/title";
 import Scroll from "base/scroll/scroll";
 import {mapGetters} from "vuex";
 export default {
-props: {
-},
 computed: {
 	...mapGetters(['currentRead'])
 },
 methods: {
-		
+	selectCurrentCatalog(item) {
+		this.$emit('selectCurrentCatalog', item);
+	}	
 },
 components: {
 	HeadTitle,

@@ -2,9 +2,9 @@
 <transition name="slideDown" mode="out-in">
 <div class="read-settings" v-if="flag">
 	<div class="setting-top">
-		<strong>上一章</strong>
+		<strong @click.stop="prevChapter">上一章</strong>
 		<span>1/6541</span>
-		<strong>下一章</strong>
+		<strong @click.stop="nextChapter">下一章</strong>
 	</div>
 	<div class="setting-bot">
 		<ul>
@@ -40,6 +40,12 @@ props: {
 methods: {
 	selectItem(index) {
 		this.$emit('selectItem', index)
+	},
+	nextChapter() {
+		this.$emit('nextChapter')
+	},
+	prevChapter() {
+		this.$emit('prevChapter')
 	}
 }
 }

@@ -1,5 +1,5 @@
 import * as types from "./mutation-types";
-import {loadCategory, savedCategory} from "common/js/catch";
+import {loadCategory, savedCategory, savedCurrentReadBook} from "common/js/catch";
 export const savedCategoryData=function({commit}, {hash, female, male}) {
 	let category=loadCategory();
 	if(hash!=category.hash) {
@@ -20,13 +20,23 @@ export const savedCurrentRead=function({commit, state}) {
 }
 export const savedCurrentBookData=function({commit, state}, arr) {
 	let currentRead=state.currentRead;
-	if(currentRead.data && currentRead.data.length)  return;
-	let ret=Object.assign({},currentRead, {data: arr});
+	let data=savedCurrentReadBook(arr)
+	let ret=Object.assign({},currentRead, {data: data});
 	commit(types.SET_CURRENT_READ, ret)
 }
 export const savedCurrentBookCatalog=function({commit, state}, arr) {
 	let currentRead=state.currentRead;
 	if(currentRead.catalog && currentRead.catalog.length)  return;
 	let ret=Object.assign({},currentRead, {catalog: arr});
+	commit(types.SET_CURRENT_READ, ret)
+}
+export const savedCurrentBookChapterId=function({commit, state}, num) {
+	let currentRead=state.currentRead;
+	let ret=Object.assign({},currentRead, {chapter_id: num});
+	commit(types.SET_CURRENT_READ, ret)
+}
+export const savedCurrentBookMultiLink=function({commit, state}, arr) {
+	let currentRead=state.currentRead;
+	let ret=Object.assign({},currentRead, {multi_link: arr});
 	commit(types.SET_CURRENT_READ, ret)
 }
