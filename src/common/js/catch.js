@@ -1,7 +1,9 @@
 import storage from "good-storage";
 const CATEGORY_KEY='__category__';
 const CATEGORY_HASH_KEY='__category_hash__';
-const CHAPTER_KEY='__CHAPTER__';
+const BOOKS_KEY='__books__';
+const BOOK_KEY='__book__';
+const MAX_LEN=50;
 function insertArray(arr, item, compare, maxLen) {
 	let index=arr.findIndex(compare)
 	if(index !== -1) {
@@ -13,7 +15,7 @@ function insertArray(arr, item, compare, maxLen) {
 	}
 	return arr;
 }
-function uniqueArray(arr) {
+export function uniqueArray(arr) {
 	let res = arr.slice();
 	let ret = [];
 	let json = {};
@@ -38,27 +40,25 @@ export function savedCategory(hash, arr1, arr2) {
 export function loadCategory() {
 	return storage.get(CATEGORY_KEY, {});
 }
-export function savedCurrentReadBook(chapters) {
-	let arr=storage.get(BCHAPTER_KEY, {})
-	let ret=[]
-	if(chapters instanceof Array) {
-		ret=arr.concat(chapters)
-	}
-	else {
-		console.log('isnotArray')
-		ret=arr.push(chapters)
-	}
-
-	//数组去重，按照章节排序
-	let res=uniqueArray(ret).sort((a, b)=>{
-		return a.c - b.c;
-	})
-	storage.set(CHAPTER_KEY, res)
+export function savedBooks(book) {
+	let arr=storage.get(BOOKS_KEY, [])
+	let res=insertArray(arr, book, (item)=>{
+		return item.fiction_id===book.fiction_id;
+	}, MAX_LEN)
+	
+	storage.set(BOOKS_KEY, res)
 	return res;
 }
-export function loadCurrentReadBook(chapters) {
-	return storage.get(CHAPTER_KEY, []);
+export function loadBooks() {
+	return storage.get(BOOKS_KEY, []);
 }
+export function savedBook(book) {
+	let json=storage.get(BOOK_KEY, {})
+	json=book
+	storage.set(BOOK_KEY, res)
+	return json;
+}
+
 export function savedReadBooks(book) {
 	
 }

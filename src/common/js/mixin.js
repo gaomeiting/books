@@ -1,6 +1,8 @@
 import {  getDownBook, ajaxDownBook, getCatalog } from "api/bookstore";
 import { Base64 } from "js-base64";
+import { uniqueArray } from "common/js/catch";
 import { mapGetters, mapActions } from "vuex";
+import {CreateBook} from "common/js/book.js";
 import {ERR_OK} from "api/config";
 export const switchRangeMixin = {
 	data() {
@@ -36,24 +38,35 @@ export const bookContentMixin= {
 			count: 0,
 			currentBookContent: [],
 			hasLoaded: false,
-			chapter: {}
+			chapter: {},
+			book: {},
+			catalog: []
 			
 		}
+	},
+	activated() {
+		this.len= 0
+		this.count= 0
+		this.currentBookContent= []
+		this.hasLoaded= false
+		this.chapter= {}
+		this.book= {}
+		this.catalog= []
 	},
 	computed: {
 		loadTxt() {
 			return this.count ? `${this.count} / ${this.len}` : '下载'
 		},
-		...mapGetters(['currentRead', 'currentRead'])
+		...mapGetters(['books', 'currentBook'])
 	},
 	methods: {
 		downBook() {
-			let id=this.currentRead.fiction_id;
-			console.log(this.currentRead.fiction_id)
-			if(!this.currentRead.catalog) {
+			let id=this.books[0].fiction_id;
+			if(!this.books[0].catalog) {
 				this._getCatalog(id);
 			}
-			if(this.currentRead.data&&this.currentRead.data.length) {
+			// 这里有问题
+			if(this.books[0].chapters&&this.books[0].chapters.length) {
 				this.hasLoaded=true;
 				this.bottomTipShow()
 				return;
@@ -68,46 +81,24 @@ export const bookContentMixin= {
 		hideBottomTip() {
 			this.$refs.bottomTip.hide()
 		},
-		startRead() {
-			//获取目录
-			let fiction_id=this.currentRead.fiction_id;
-			let index=this.currentRead.chapter_id;
-			if(!this.currentRead.catalog) {
-				this._getCatalog(fiction_id);
-			}
-			
-			if(this.currentRead.data && this._findIndex() !== -1) {
-				console.log("从数据中读取")
-				this.parseCurrentChapter()
-			}
-			else {
-				console.log("重新发送请求中读取")
-				let chapter_id=this.currentRead.chapter_id;
-				this._getDownBook(fiction_id, chapter_id);
-			}
-
-			/*if( this.$route.path!=='/read' )  this.$router.push('/read')*/
-		},
-		parseCurrentChapter() {
-			let index=this._findIndex();
-			if(index===-1) {
-				console.log("章节获取失败！")
-			}
-			console.log(index, 'chapter')
-			this.chapter=JSON.parse(Base64.decode(this.currentRead.data[index].res))
-		},
+		
+		
 		_findIndex() {
-			let data=this.currentRead.data;
-			console.log(data[0].c)
-			return data.findIndex((item)=>{
-				return item.c===this.currentRead.chapter_id;
+			return this.books[0].chapters.findIndex(item=>{
+				return item.c===item.chapter_id;
+			})
+		},
+		parseCurrentChapter(book) {
+			book.getChapter().then(res=>{
+				//console.log(res)
+				this.chapter=JSON.parse(res);
 			})
 		},
 		_getCatalog(id) {
-			if(this.currentRead.catelog) return;
+			if(this.book.catalog) return;
 			getCatalog(id).then(res=>{
 				if(res.result===ERR_OK) {
-					this.savedCurrentBookCatalog(res.item.toc);
+					this.book.catalog=res.item.toc;
 				}
 			}).catch(err=>{
 				console.log(err)
@@ -117,7 +108,8 @@ export const bookContentMixin= {
 			getDownBook(fiction_id, chapter_id).then(res=>{
 				if(res.result===ERR_OK) {
 					this.len=res.data.length;
-					this.savedCurrentBookMultiLink(res.data)
+					this.book.fiction_id=fiction_id;
+					this.book.chapter_id=chapter_id;
 					this._ajaxDownBook(res.data)
 				}
 			}).catch(err => {
@@ -133,8 +125,20 @@ export const bookContentMixin= {
 		_loopAjax(item) {
 			if(this.count>=this.len) {
 				//加入弹框；
-				this.savedCurrentBookData(this.currentBookContent)
-				this.parseCurrentChapter()
+				if(!this.book.chapters) {
+					this.book.chapters=[];
+					let res=this.book.chapters.concat(this.currentBookContent);
+					this.book.chapters=this._uniqueSortArray(res)
+				}
+				else{
+					let res=this.book.chapters.concat(this.currentBookContent);
+					this.book.chapters=this._uniqueSortArray(res)
+				}
+				
+				let book=CreateBook(this.book);
+				//提交commit book;
+				this.savedBookList(book)
+				this.parseCurrentChapter(book)
 				if(this.len>1) {
 					this.bottomTipShow()
 				}
@@ -158,6 +162,11 @@ export const bookContentMixin= {
 				console.log(err)
 			})
 		},
-		...mapActions(['savedCurrentBookData', 'savedCurrentBookCatalog', 'savedCurrentBookChapterId', 'savedCurrentBookMultiLink'])
+		_uniqueSortArray(arr) {
+			return uniqueArray(arr).sort((a, b)=>{
+					return a.c - b.c;
+				})
+		},
+		...mapActions(['savedBookList'])
 	}
 }

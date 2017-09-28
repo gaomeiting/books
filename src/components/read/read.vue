@@ -2,14 +2,19 @@
 <transition name="slide" mode="out-in">
 <div class="read-wrap">
 	<div class="read-scroll-wrap" @click.stop="switchMenu">
-	<scroll :data="chapter.p" :pullUp="pullUp" @scrollEnd="loadMore" class="read" ref="read">
-		<div class="read-con">
-			<h3 class="read-title">
-				{{chapter.t}}
-			</h3>
-			<p class="read-text" v-for="(item, index) in chapter.p" ref="text">{{item}}</p>
-		</div>
-	</scroll>
+		<scroll :data="chapters" :pullUp="pullUp" :beforeScroll="beforeScroll" @beforeScrollStart="beforeScrollStart" @scrollEnd="loadMore" class="read" ref="read">
+			<div class="read-con">
+				<div class="read-article" v-for="chapter in chapters" ref="article">
+					<h3 class="read-title" v-if="chapter.t">
+						{{chapter.t}}
+					</h3>
+					<p class="read-text" v-for="(item, index) in chapter.p" ref="text">{{item}}</p>
+				</div>
+				<div class="read-load" v-show="hasMore && chapters.length>0">
+					<loading></loading>
+				</div>
+			</div>
+		</scroll>
 	</div>
 	<read-title title="返回" :flag="flag"></read-title>
 	<read-settings :flag="flag" :settings="settings" @selectItem="selectItem" @nextChapter="nextChapter" @prevChapter="prevChapter"></read-settings>
@@ -21,19 +26,23 @@
 			<a href="javascript:;" class="btn" @click.stop="hideBottomTip">确定</a>
 		</div>
 	</bottom-tip>
-	<router-view @selectCurrentCatalog="selectCurrentCatalog"></router-view>
+	<router-view @selectCurrentCatalog="selectCurrentCatalog" :catalog="catalogList" :current="books[0].chapter_id"></router-view>
 </div>
 </transition>
 </template>
 
 <script type="text/ecmascript-6">
 import Scroll from "base/scroll/scroll";
+import Loading from "base/loading/loading";
 import ReadTitle from "components/read-title/read-title";
 import ReadFont from "components/read-font/read-font";
 import ReadSettings from "components/read-settings/read-settings";
 import BottomTip from "base/bottom-tip/bottom-tip";
 import {mapGetters} from "vuex";
+import {getCatalog} from "api/bookstore";
+import {ERR_OK} from "api/config";
 import { bookContentMixin } from "common/js/mixin";
+import {CreateBook} from "common/js/book.js";
 export default {
 mixins: [ bookContentMixin ],
 data() {
@@ -43,6 +52,11 @@ data() {
 		fontFlag: false,
 		fontSize: 16,
 		currentBgColor: 0,
+		catalogList: [],
+		hasMore: true,
+		chapters: [],
+		articleIndex: 0,
+		beforeScroll: true,
 		settings: [
 				{icon: 'iconfont icon-caidan2', text: '目录' },
 				{icon: 'iconfont icon-MobilePortraitCopy', text: '字体' },
@@ -52,25 +66,44 @@ data() {
 	}
 },
 activated() {
-	//console.log('activated')
-	this.startRead()
+	this.initReadBook();
+	this.hasMore=true;
+	this.chapters=[];
+	articleIndex=0;
 },
 watch: {
-	currentRead(newVal, oldVal) {
-		if(newVal.chapter_id===oldVal.chapter_id) return;
-		this.startRead()
+	chapter(newVal, oldVal) {
+		if(newVal === oldVal || !newVal ) return;
+		let index=this.chapters.findIndex(chapter=> {
+			return chapter.t===newVal.t
+		})
+		if(index === -1) {
+			
+			this.chapters.push(newVal)
+		}
+		this.articleIndex=index !==-1 ? index : this.chapters.length-1
+		console.log(newVal, "chapter改变了")
 	}
 },
 computed: {
-	...mapGetters(['currentRead'])
+
+	
 },
 methods: {
 	
 	loadMore() {
-
+		this._nextChapter()
 	},
+	
+	initReadBook() {
+		let fiction_id=this.currentBook.fiction_id
+		let chapter_id=0;
+		this._hasCatchCurrentChapter(fiction_id, chapter_id);
+	},
+	
 	switchMenu() {
 		this.flag=!this.flag
+		console.log(this.flag)
 		if(!this.flag) {
 			if(this.fontFlag) this.fontFlag=false;
 		}
@@ -95,12 +128,13 @@ methods: {
 		this.currentBgColor=index;
 	},
 	selectCurrentCatalog(item) {
-		this.savedCurrentBookChapterId(item.chapter_id)
+		console.log(item,"目录")
+		this._hasCatchAnyChapter(this.currentBook.fiction_id, item.chapter_id)
 	},
 	selectItem(index) {
 		switch(index) {
 			case 0:
-				this.$router.push('/read/catalog')
+				this.getCatalogs();
 				break;
 			case 1:
 				this.fontFlag=!this.fontFlag
@@ -115,7 +149,6 @@ methods: {
 					this.settings[index].icon='iconfont icon-baitian'
 					this.settings[index].text='白天'
 				}
-				console.log(this.settings)
 				break;
 			case 3:
 				this.settings[index].text=this.loadTxt;
@@ -124,23 +157,137 @@ methods: {
 		}
 
 	},
+	getCatalogs() {
+		let fiction_id=this.currentBook.fiction_id;
+		let books=this.books.slice();
+		let index=books.findIndex(item=> {
+			return item.fiction_id===fiction_id
+		})
+		if(index!==-1) {
+			if(!books[index].catalog) {
+				this.catalogList=_getCatalogs();
+				let ret_book=Object.assign({}, books[index], {catalog: this.this.catalogList});
+				this.savedBookList(ret_book);
+			}
+			else {
+				this.catalogList=books[index].catalog;
+			}
+		}
+		else {
+			this.catalogList=_getCatalogs();
+		}
+		this.$router.push('/read/catalog')
+	},
+	_getCatalogs() {
+		getCatalog(fiction_id).then(res=>{
+			if(res.result===ERR_OK) {
+				return res.item.toc;
+			}
+		}).catch(err=>{
+			console.log(err)
+		})
+	},
 	nextChapter() {
-		let chapter_id=this.currentRead.chapter_id +1
+		let index=this._nextChapter()
+		let el=this.$refs.article[this.articleIndex];
+		this.$refs.read.scrollToElement(el,0)
 		// 需要做边境处理；
-		console.log(chapter_id, 'nextChapter')
-		this.savedCurrentBookChapterId(chapter_id)
-		/*this.startRead()*/
-		this.$refs.read.scrollTo(0, 0, 0)
+		/*this.$refs.read.scrollTo(0, 0, 0)*/
 	},
 	prevChapter() {
-		let chapter_id=this.currentRead.chapter_id -1
-		if(chapter_id<0) {
-			chapter_id=0;
-			return;
+		
+		let fiction_id=this.currentBook.fiction_id;
+		let {index, chapter_id}=this._checkCatchBook(fiction_id);
+		let ret_chapter_id=chapter_id-1
+		if(ret_chapter_id<0) {
+			ret_chapter_id=0;
 		}
-		this.savedCurrentBookChapterId(chapter_id)
-		/*this.startRead()*/
-		this.$refs.read.scrollTo(0, 0, 0)
+		if(chapter_id) {
+			this._hasCatchAnyChapter(index,  ret_chapter_id)
+		}
+		else {
+
+			this._getDownBook(fiction_id,  ret_chapter_id);
+		}
+
+		let el=this.$refs.article[this.articleIndex];
+		this.$refs.read.scrollToElement(el,0)
+	},
+	beforeScrollStart() {
+		if(this.flag) {
+			this.flag=false;
+		}
+	},
+	_nextChapter() {
+		let fiction_id=this.currentBook.fiction_id;
+		let {index, chapter_id}=this._checkCatchBook(fiction_id);
+		if(chapter_id) {
+			this._hasCatchAnyChapter(index, chapter_id+1)
+		}
+		else {
+
+			this._getDownBook(fiction_id, chapter_id+1);
+		}
+	},
+	_checkCatchBook(fiction_id) {
+		let chapter_id=0;
+		let index=this.books.findIndex(book=>{
+			return book.fiction_id===fiction_id
+		}) 
+		if(index===-1) {
+			chapter_id=0;
+		}
+		else {
+			//console.log(index, "index")
+			chapter_id=this.books[index].chapter_id
+		}
+		return { index, chapter_id };
+	},
+	
+	_hasCatchAnyChapter(index, chapter_id) {
+		console.log(index, "chapter")
+		let bBtn=false;
+		let fiction_id=this.currentBook.fiction_id;
+		let books=this.books.slice();
+		console.log(this.books, "this.books")
+		console.log(index,this.books[index], "this.books")
+		let chapter_index=books[index].chapters.findIndex(chapter=>{
+			return chapter.c===chapter_id
+		})
+		if(chapter_index===-1) {
+			//发送请求；
+			this._getDownBook(fiction_id, chapter_id);
+		}
+		else {
+			//读取缓存
+			let book=Object.assign({}, books[index], {chapter_id})
+			let ret_book=CreateBook(book)
+			this.savedBookList(ret_book);
+			this.parseCurrentChapter(ret_book)
+		}
+		
+	},
+	_hasCatchCurrentChapter(fiction_id, chapter_id) {
+		let bBtn=false;
+		let books=this.books.slice()
+		console.log(books)
+		books.forEach(item=>{
+			if(item.fiction_id===fiction_id) {
+				bBtn=true;
+				//从缓存中读数据
+				console.log("缓存中读数据")
+				let book=CreateBook(item)
+				console.log(book)
+				this.parseCurrentChapter(book)
+				return false;
+			}
+		})
+		if(!bBtn) {
+			console.log("发送请求")
+			//发起请求；
+			this._getDownBook(fiction_id, chapter_id);
+			this._getCatalog(fiction_id);
+		}
 	}
 },
 components: {
@@ -148,7 +295,8 @@ components: {
 	ReadTitle,
 	ReadSettings,
 	ReadFont,
-	BottomTip
+	BottomTip,
+	Loading
 }
 }
 </script>
@@ -195,6 +343,7 @@ components: {
 		right: 0;
 		background-color: $color-read-theme;
 		overflow: hidden;
+
 		.read-con {
 			padding: 12px;
 			font-size: $font-size-medium-x;

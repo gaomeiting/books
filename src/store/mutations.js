@@ -20,8 +20,8 @@ const mutations = {
 	[types.SET_CURRENT_BOOK](state, json) {
 		state.currentBook=json
 	},
-	[types.SET_CURRENT_READ](state, json) {
-		state.currentRead=json
+	[types.SET_BOOKS](state, books) {
+		state.books=books
 	}
 }
 export default mutations

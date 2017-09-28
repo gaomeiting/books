@@ -65,7 +65,6 @@ methods: {
 		this.$router.push('/bookDetail')
 		if(item.fiction_id==this.currentBook.fiction_id) return;
 		this.setCurrentBook(item);
-		this.savedCurrentRead();
 		
 	},
 	_initedRankDetail() {
@@ -90,8 +89,7 @@ methods: {
 	},
 	...mapMutations({
 		'setCurrentBook': 'SET_CURRENT_BOOK'
-	}),
-	...mapActions(['savedCurrentRead'])	
+	})
 },
 components: {
 	HeadTitle,

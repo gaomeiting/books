@@ -2,11 +2,11 @@
 <transition name="slideLeft" mode="out-in">
 <div class="book-catalog-wrap">
 	<head-title></head-title>
-	<scroll :data="currentRead.catalog" class="book-catalog">
+	<scroll :data="catalog" class="book-catalog">
 		<ul>
-			<li v-for="item in currentRead.catalog" :class="{'active' : item.chapter_id===currentRead.chapter_id}" :key="item.html_sha1" @click.stop="selectCurrentCatalog(item)">
+			<li v-for="item in catalog" :class="{'active' : item.chapter_id===current}" :key="item.html_sha1" @click.stop="selectCurrentCatalog(item)">
 				<span>{{item.title}}</span>
-				<strong :class="{'active' : item.chapter_id===currentRead.chapter_id}" v-if="item.free">免费</strong>
+				<strong :class="{'active' : item.chapter_id===current}" v-if="item.free">免费</strong>
 			</li>
 		</ul>
 	</scroll>
@@ -19,8 +19,15 @@ import HeadTitle from "components/title/title";
 import Scroll from "base/scroll/scroll";
 import {mapGetters} from "vuex";
 export default {
-computed: {
-	...mapGetters(['currentRead'])
+props: {
+	catalog: {
+		type: Array,
+		default: null
+	},
+	current: {
+		type: Number,
+		default: 0
+	}
 },
 methods: {
 	selectCurrentCatalog(item) {

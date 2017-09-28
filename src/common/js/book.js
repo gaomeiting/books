@@ -13,9 +13,9 @@ export class Book {
 		if(this.chapter) {
 			return 
 		}
-		let index=findIndex(chapters, this.chapter_id);
-		this.chapter=chapters[index];
-		return Promise.resolve(Base64.decode(this.chapter))
+		let index=findIndex(this.chapters, this.chapter_id);
+		this.chapter=this.chapters[index];
+		return Promise.resolve(Base64.decode(this.chapter.res))
 	}
 }
 export function CreateBook(data) {

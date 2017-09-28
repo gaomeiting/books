@@ -1,4 +1,4 @@
-import {loadCategory, loadCategoryHash} from "common/js/catch";
+import {loadCategory, loadCategoryHash, loadBooks} from "common/js/catch";
 const state= {
 	subject: {},
 	channel: 369,
@@ -6,6 +6,6 @@ const state= {
 	category: loadCategory(),
 	currentCategory: {},
 	currentBook: {},
-	currentRead: {chapter_id: 0}
+	books: loadBooks()
 }
 export default state;

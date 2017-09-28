@@ -23,7 +23,7 @@
 					</div>
 				</div>
 				<div class="btn-wrap">
-					<a href="javascript:;" class="btn" @click.stop="startRead">开始阅读</a>
+					<a href="javascript:;" class="btn" @click.stop="goRead">开始阅读</a>
 					<a href="javascript:;" class="btn" @click.stop="downBook">{{ loadTxt }}</a>
 				</div>
 				<p class="introduce ellipsis" @click.stop="hasEllipsis($event)">
@@ -72,7 +72,7 @@ import BottomTip from "base/bottom-tip/bottom-tip";
 import {getBookDetail, startReadUrl } from "api/bookstore";
 import {ERR_OK} from "api/config";
 import {bookContentMixin} from "common/js/mixin";
-import {mapGetters, mapMutations} from "vuex";
+import {mapGetters} from "vuex";
 import {formatDate} from "common/js/data";
 export default {
 mixins: [bookContentMixin],
@@ -119,9 +119,7 @@ computed: {
 		let book=[];
 		book.push(this.content)
 		return book.concat(this.list);
-	},
-	
-	...mapGetters(['currentBook'])
+	}
 },
 
 methods: {
@@ -144,6 +142,10 @@ methods: {
 			el.classList.add('ellipsis')
 		}
 	},
+	goRead() {
+		this.$router.push('/read')
+	},
+	
 	
 	_initedBookDetail(id) {
 		getBookDetail(id).then(res=>{
@@ -156,10 +158,7 @@ methods: {
 		}).catch(err=>{
 			console.log(err)
 		})
-	},
-	...mapMutations({
-		'setCurrentBook' : 'SET_CURRENT_BOOK'
-	})
+	}
 },
 components: {
 	HeadTitle,
