@@ -1,10 +1,10 @@
 <template>
 <transition name="slideLeft" mode="out-in">
-<div class="book-catalog-wrap">
-	<head-title></head-title>
-	<scroll :data="catalog" class="book-catalog">
+<div class="book-catalog-wrap" v-show="flag">
+	<head-title :box="box" @back="back"></head-title>
+	<scroll :data="catalog" class="book-catalog" ref="catalogs">
 		<ul>
-			<li v-for="item in catalog" :class="{'active' : item.chapter_id===current}" :key="item.html_sha1" @click.stop="selectCurrentCatalog(item)">
+			<li v-for="item in catalog" :class="{'active' : item.chapter_id===current}" :key="item.html_sha1" @click.stop="selectCurrentCatalog(item)" ref="log">
 				<span>{{item.title}}</span>
 				<strong :class="{'active' : item.chapter_id===current}" v-if="item.free">免费</strong>
 			</li>
@@ -27,9 +27,34 @@ props: {
 	current: {
 		type: Number,
 		default: 0
+	},
+	flag: {
+		type: Boolean,
+		default: false
+	}
+},
+data() {
+	return {
+		box: true
+	}
+},
+
+watch: {
+	current() {
+		console.log("current123")
+		
 	}
 },
 methods: {
+	back() {
+		this.$emit("back");
+	},
+	_scrollToElement() {
+		let el=this.$refs.log[this.current];
+		if(el) {
+			this.$refs.catalogs.scrollToElement(el, 0)
+		}
+	},
 	selectCurrentCatalog(item) {
 		this.$emit('selectCurrentCatalog', item);
 	}	

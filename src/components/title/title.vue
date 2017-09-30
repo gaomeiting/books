@@ -12,10 +12,18 @@ props: {
 	title: {
 		type: String,
 		default: ''
+	},
+	box: {
+		type: Boolean,
+		default: false
 	}
 },
 methods: {
 	back() {
+		if(this.box) {
+			this.$emit("back");
+			return;
+		}
 		this.$router.back()
 	},
 	home() {

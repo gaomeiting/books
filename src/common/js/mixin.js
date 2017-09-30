@@ -92,6 +92,7 @@ export const bookContentMixin= {
 			book.getChapter().then(res=>{
 				//console.log(res)
 				this.chapter=JSON.parse(res);
+				//this.chapter.c=
 			})
 		},
 		_getCatalog(id) {

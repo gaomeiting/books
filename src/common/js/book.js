@@ -15,6 +15,7 @@ export class Book {
 		}
 		let index=findIndex(this.chapters, this.chapter_id);
 		this.chapter=this.chapters[index];
+		console.log(this.chapter.c)
 		return Promise.resolve(Base64.decode(this.chapter.res))
 	}
 }

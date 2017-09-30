@@ -26,7 +26,7 @@
 			<a href="javascript:;" class="btn" @click.stop="hideBottomTip">确定</a>
 		</div>
 	</bottom-tip>
-	<router-view @selectCurrentCatalog="selectCurrentCatalog" :catalog="catalogList" :current="books[0].chapter_id"></router-view>
+	<book-catalog :flag="flagCatalog" @back="back" @selectCurrentCatalog="selectCurrentCatalog" :catalog="catalogList" :current="books[0].chapter_id"></book-catalog>
 </div>
 </transition>
 </template>
@@ -37,6 +37,7 @@ import Loading from "base/loading/loading";
 import ReadTitle from "components/read-title/read-title";
 import ReadFont from "components/read-font/read-font";
 import ReadSettings from "components/read-settings/read-settings";
+import BookCatalog from "components/book-catalog/book-catalog";
 import BottomTip from "base/bottom-tip/bottom-tip";
 import {mapGetters} from "vuex";
 import {getCatalog} from "api/bookstore";
@@ -55,7 +56,7 @@ data() {
 		catalogList: [],
 		hasMore: true,
 		chapters: [],
-		articleIndex: 0,
+		flagCatalog: false,
 		beforeScroll: true,
 		settings: [
 				{icon: 'iconfont icon-caidan2', text: '目录' },
@@ -68,8 +69,8 @@ data() {
 activated() {
 	this.initReadBook();
 	this.hasMore=true;
+	this.flag=false;
 	this.chapters=[];
-	articleIndex=0;
 },
 watch: {
 	chapter(newVal, oldVal) {
@@ -78,19 +79,15 @@ watch: {
 			return chapter.t===newVal.t
 		})
 		if(index === -1) {
-			
 			this.chapters.push(newVal)
 		}
-		this.articleIndex=index !==-1 ? index : this.chapters.length-1
 		console.log(newVal, "chapter改变了")
 	}
 },
-computed: {
-
-	
-},
 methods: {
-	
+	back() {
+		this.flagCatalog=false;
+	},
 	loadMore() {
 		this._nextChapter()
 	},
@@ -103,7 +100,6 @@ methods: {
 	
 	switchMenu() {
 		this.flag=!this.flag
-		console.log(this.flag)
 		if(!this.flag) {
 			if(this.fontFlag) this.fontFlag=false;
 		}
@@ -129,15 +125,28 @@ methods: {
 	},
 	selectCurrentCatalog(item) {
 		console.log(item,"目录")
-		this._hasCatchAnyChapter(this.currentBook.fiction_id, item.chapter_id)
+		this.chapters=[];
+		let fiction_id=this.currentBook.fiction_id;
+		let {index}=this._checkCatchBook(fiction_id);
+		if(index!==-1) {
+			this._hasCatchAnyChapter(index, item.chapter_id)
+		}
+		else {
+
+			this._getDownBook(fiction_id, item.chapter_id);
+		}
+		this.flagCatalog=false;
 	},
 	selectItem(index) {
 		switch(index) {
 			case 0:
 				this.getCatalogs();
+				this.flag=false;
+				this.flagCatalog=true;
 				break;
 			case 1:
 				this.fontFlag=!this.fontFlag
+				this.flag=false;
 				break;
 			case 2: 
 				if(this.settings[index].text=='白天') {
@@ -149,10 +158,12 @@ methods: {
 					this.settings[index].icon='iconfont icon-baitian'
 					this.settings[index].text='白天'
 				}
+				this.flag=false;
 				break;
 			case 3:
 				this.settings[index].text=this.loadTxt;
 				this.downBook();
+				this.flag=false;
 				break;
 		}
 
@@ -164,21 +175,31 @@ methods: {
 			return item.fiction_id===fiction_id
 		})
 		if(index!==-1) {
+			//console.log("找到目录")
 			if(!books[index].catalog) {
-				this.catalogList=_getCatalogs();
-				let ret_book=Object.assign({}, books[index], {catalog: this.this.catalogList});
-				this.savedBookList(ret_book);
+				//console.log("获取目录")
+				getCatalog(fiction_id).then(res=>{
+					if(res.result===ERR_OK) {
+						this.catalogList=res.item.toc;
+						//console.log("目录是", this.catalogList)
+						let ret_book=Object.assign({}, books[index], {catalog: this.catalogList});
+						this.savedBookList(ret_book);
+					}
+				}).catch(err=>{
+					console.log(err)
+				})
+				
 			}
 			else {
 				this.catalogList=books[index].catalog;
 			}
 		}
 		else {
-			this.catalogList=_getCatalogs();
+			this.catalogList=this._getCatalogs(fiction_id);
 		}
-		this.$router.push('/read/catalog')
 	},
-	_getCatalogs() {
+	_getCatalogs(fiction_id) {
+		//console.log(fiction_id)
 		getCatalog(fiction_id).then(res=>{
 			if(res.result===ERR_OK) {
 				return res.item.toc;
@@ -188,14 +209,15 @@ methods: {
 		})
 	},
 	nextChapter() {
+		this.chapters=[];
 		let index=this._nextChapter()
-		let el=this.$refs.article[this.articleIndex];
-		this.$refs.read.scrollToElement(el,0)
+		this.flag=false;
 		// 需要做边境处理；
 		/*this.$refs.read.scrollTo(0, 0, 0)*/
 	},
 	prevChapter() {
-		
+		this.chapters=[];
+		this.flag=false;
 		let fiction_id=this.currentBook.fiction_id;
 		let {index, chapter_id}=this._checkCatchBook(fiction_id);
 		let ret_chapter_id=chapter_id-1
@@ -210,8 +232,6 @@ methods: {
 			this._getDownBook(fiction_id,  ret_chapter_id);
 		}
 
-		let el=this.$refs.article[this.articleIndex];
-		this.$refs.read.scrollToElement(el,0)
 	},
 	beforeScrollStart() {
 		if(this.flag) {
@@ -245,12 +265,9 @@ methods: {
 	},
 	
 	_hasCatchAnyChapter(index, chapter_id) {
-		console.log(index, "chapter")
 		let bBtn=false;
 		let fiction_id=this.currentBook.fiction_id;
 		let books=this.books.slice();
-		console.log(this.books, "this.books")
-		console.log(index,this.books[index], "this.books")
 		let chapter_index=books[index].chapters.findIndex(chapter=>{
 			return chapter.c===chapter_id
 		})
@@ -270,7 +287,6 @@ methods: {
 	_hasCatchCurrentChapter(fiction_id, chapter_id) {
 		let bBtn=false;
 		let books=this.books.slice()
-		console.log(books)
 		books.forEach(item=>{
 			if(item.fiction_id===fiction_id) {
 				bBtn=true;
@@ -296,7 +312,8 @@ components: {
 	ReadSettings,
 	ReadFont,
 	BottomTip,
-	Loading
+	Loading,
+	BookCatalog
 }
 }
 </script>
