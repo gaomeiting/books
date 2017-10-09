@@ -37,7 +37,7 @@
 				<h3>类别标签</h3>
 				<p>
 					<span v-for="tag in currentBook.tags">{{tag}}</span>
-				</p>
+				</p> 
 			</div>
 			<div class="author-books-wrap" v-if="list.length">
 				<h4>作者其它图书</h4>
@@ -141,6 +141,7 @@ methods: {
 		else{
 			el.classList.add('ellipsis')
 		}
+		this.$refs.scroll.refresh();
 	},
 	goRead() {
 		this.$router.push('/read')

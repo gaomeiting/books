@@ -1,6 +1,6 @@
 <template>
 <ul class="book-list">
-	<li class="item" v-for="(item, index) in bookList">
+	<li class="item" v-for="(item, index) in bookList" @click.stop="selectBook(item)">
 		<figure>
 			<img v-lazy="item.cover">
 		</figure>
@@ -26,6 +26,9 @@ props: {
 	}
 },
 methods: {
+	selectBook(item) {
+		this.$emit('selectBook', item)
+	},
 	wordCount(count) {
 		if(count>10000) {
 			return ((count / 10000) | 0) + '万字'

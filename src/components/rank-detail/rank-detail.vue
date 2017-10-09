@@ -27,10 +27,12 @@ import Scroll from "base/scroll/scroll";
 import RankList from "components/rank-list/rank-list";
 import Loading from "base/loading/loading";
 import NoResult from "base/no-result/no-result";
-import {mapGetters, mapMutations, mapActions} from "vuex";
+import {selectCurrentBook} from "common/js/mixin";
+import {mapGetters, mapActions} from "vuex";
 import {getRankDetail} from "api/bookstore";
 import {ERR_OK} from "api/config";
 export default {
+mixins: [selectCurrentBook],
 data() {
 	return {
 		list: [],
@@ -61,12 +63,7 @@ methods: {
 		this.start+=10;
 		this._ajaxData();
 	},
-	selectBook(item) {
-		this.$router.push('/bookDetail')
-		if(item.fiction_id==this.currentBook.fiction_id) return;
-		this.setCurrentBook(item);
-		
-	},
+	
 	_initedRankDetail() {
 		if(!this.rank[1]) {
 			this.$router.push('/rank');
@@ -86,10 +83,8 @@ methods: {
 		}).catch(err=>{
 			console.log(err)
 		})
-	},
-	...mapMutations({
-		'setCurrentBook': 'SET_CURRENT_BOOK'
-	})
+	}
+	
 },
 components: {
 	HeadTitle,

@@ -1,6 +1,6 @@
 <template>
 <ul class="week-list">
-	<li v-for="item in list">
+	<li v-for="item in list" @click.stop="selectBook(item)">
 		<figure>
 			<img v-lazy="item.cover">
 			<i v-if="hasFree" class="iconfont icon-xianmian icon"></i>
@@ -25,6 +25,9 @@ props: {
 	}
 },
 methods: {
+	selectBook(item) {
+		this.$emit('selectBook', item)
+	}
 }
 
 }

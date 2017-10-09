@@ -1,7 +1,7 @@
 import {  getDownBook, ajaxDownBook, getCatalog } from "api/bookstore";
 import { Base64 } from "js-base64";
 import { uniqueArray } from "common/js/catch";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import {CreateBook} from "common/js/book.js";
 import {ERR_OK} from "api/config";
 export const switchRangeMixin = {
@@ -170,4 +170,17 @@ export const bookContentMixin= {
 		},
 		...mapActions(['savedBookList'])
 	}
+};
+export const selectCurrentBook= {
+	methods: {
+		selectBook(item) {
+			this.$router.push('/bookDetail')
+			/*if(this.currentBook.fiction_id && item.fiction_id==this.currentBook.fiction_id) return;*/
+			this.setCurrentBook(item);
+			
+		},
+		...mapMutations({
+			'setCurrentBook': 'SET_CURRENT_BOOK'
+		})
+	}	
 }

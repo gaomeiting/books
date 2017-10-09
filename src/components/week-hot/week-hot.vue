@@ -2,7 +2,7 @@
 <div class="week-hot">
 	<hot-title :title="title"></hot-title>
 	<div class="week-con">
-		<week-list :list="list" :hasFree="hasFree"></week-list>
+		<week-list :list="list" :hasFree="hasFree" @selectBook="selectBook"></week-list>
 		<see-more title="查看更多&gt;&gt;" @seeMore="seeMore" v-if="checkMore"></see-more>
 	</div>
 </div>
@@ -38,6 +38,9 @@ props: {
 methods: {
 	seeMore() {
 		this.$emit('seeMore')
+	},
+	selectBook(item) {
+		this.$emit('selectBook', item)
 	}
 },
 components: {

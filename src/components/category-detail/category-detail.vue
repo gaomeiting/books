@@ -5,7 +5,7 @@
 	<scroll class="category-detail" :data="bookList" :pullUp="pullUp" @scrollEnd="loadMore">
 		<div>
 			<category-tag :tags="tags" :currentTag="currentTag" :currentState="currentState" @selectTag="selectTag" @selectState="selectState"></category-tag>
-			<book-list :bookList="bookList"></book-list>
+			<book-list :bookList="bookList" @selectBook="selectBook"></book-list>
 			<loading v-show="hasMore"></loading>
 			<div class="result-wrap">
 				<no-result v-show="!hasMore && !bookList.length" title="小编努力种菜中~·"></no-result>
@@ -18,14 +18,17 @@
 
 <script type="text/ecmascript-6">
 import Scroll from "base/scroll/scroll";
+import NoResult from "base/no-result/no-result";
 import HeadTitle from "components/title/title";
 import CategoryTag from "components/category-tag/category-tag";
 import BookList from "components/book-list/book-list";
 import Loading from "base/loading/loading";
+import {selectCurrentBook} from "common/js/mixin";
 import {ERR_OK} from "api/config";
 import {mapGetters} from "vuex";
 import {getCategoryDetail} from "api/bookstore";
 export default {
+mixins: [selectCurrentBook],
 data() {
 	return {
 		bookList: [],
@@ -84,7 +87,6 @@ methods: {
 			return;
 		}
 		this.start+=10;
-		console.log(this.start)
 		this._ajaxData();
 	},
 	_initedCategoryDetail() {
@@ -101,7 +103,6 @@ methods: {
 			if(res.result===ERR_OK) {
 				this.bookList=this.bookList.concat(res.items);
 				this.hasMore=res.more;
-				console.log(this.hasMore)
 			}
 		}).catch(err=>{
 			console.log(err)
@@ -113,7 +114,8 @@ components: {
 	HeadTitle,
 	CategoryTag,
 	BookList,
-	Loading
+	Loading,
+	NoResult
 
 }
 }

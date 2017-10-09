@@ -25,11 +25,11 @@
 					</li>
 				</ul>
 			</div>
-			<week-hot :list="weekHot" @seeMore="seeMoreHot"></week-hot>
-			<recommend title="重磅推荐" :list="recList" more="查看全部 &gt;&gt;" @selectChannel="selectChannel"></recommend>
-			<favorite title="女生最爱" :list="famaleList" @selectChannel="selectChannel" more="女生频道 &gt;&gt;"></favorite>
-			<favorite title="男生最爱" :list="maleList" @selectChannel="selectChannel" more="男生频道 &gt;&gt;"></favorite>
-			<week-hot title="限时免费" :list="timeFree" :hasFree="hasFree" @seeMore="seeMoreFree" more="更多限时免费佳作 &gt;&gt;"></week-hot>
+			<week-hot :list="weekHot" @seeMore="seeMoreHot" @selectBook="selectBook"></week-hot>
+			<recommend title="重磅推荐" :list="recList" more="查看全部 &gt;&gt;" @selectChannel="selectChannel" @selectBook="selectBook"></recommend>
+			<favorite title="女生最爱" :list="famaleList" @selectChannel="selectChannel" @selectBook="selectBook" more="女生频道 &gt;&gt;"></favorite>
+			<favorite title="男生最爱" :list="maleList" @selectChannel="selectChannel" @selectBook="selectBook" more="男生频道 &gt;&gt;"></favorite>
+			<week-hot title="限时免费" :list="timeFree" :hasFree="hasFree" @seeMore="seeMoreFree"  @selectBook="selectBook" more="更多限时免费佳作 &gt;&gt;"></week-hot>
 		</div>
 	</scroll>
 	</div>
@@ -51,9 +51,11 @@ import Favorite from "components/favorite/favorite";
 import Loading from "base/loading/loading";
 import NoResult from "base/no-result/no-result";
 import { ERR_OK } from "api/config";
+import { selectCurrentBook } from "common/js/mixin";
 import { getBookstore } from "api/bookstore";
 import {mapMutations} from "vuex";
 export default {
+mixins: [selectCurrentBook],
 data() {
 	return {
 		ad_pic:[],

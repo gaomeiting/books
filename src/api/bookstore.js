@@ -139,3 +139,16 @@ export function getCatalog(fiction_id) {
 		return Promise.reject(err)
 	})
 }
+export function getBookshelfByIds(ids) {
+	const url=`/store/v0/fiction/id_list`
+	let data={
+		ids
+	}
+	return axios(url, {
+		params: data
+	}).then(res=>{
+		return Promise.resolve(res.data);
+	}).catch(err=>{
+		return Promise.reject(err)
+	})
+}

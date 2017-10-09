@@ -8,9 +8,9 @@
 	</h3>
 	<div class="favorite-con">
 		<div class="favorite-list-wrap" v-if="list.length">
-			<book-list :bookList="currentList.slice(0,1)"></book-list>
+			<book-list :bookList="currentList.slice(0,1)" @selectBook="selectBook"></book-list>
 			<ol>
-				<li v-for="(item, index) in currentList.slice(1)">
+				<li v-for="(item, index) in currentList.slice(1)" @click.stop="selectBook(item)">
 					<span>0{{index+2}}</span>
 					<strong>{{item.title}}</strong>
 					<small>{{item.authors}}</small>
@@ -61,6 +61,9 @@ watch : {
 	}
 },
 methods: {
+	selectBook(item) {
+		this.$emit('selectBook', item)
+	},
 	switchChannel(index) {
 		this.currentIndex=index;
 		let ret=this._sortChannel(this.list)

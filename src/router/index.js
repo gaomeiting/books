@@ -5,6 +5,11 @@ const Bookstore=(resolve =>{
 		resolve(module)
 	})
 })
+const Bookshelf=(resolve =>{
+	import('components/bookshelf/bookshelf').then((module)=> {
+		resolve(module)
+	})
+})
 const WeekHotMain=(resolve=>{
 	import('components/week-hot-main/week-hot-main').then( module=> {
 		resolve(module)
@@ -72,6 +77,7 @@ export default new Router({
 	routes: [
 		{ path: '/', redirect: '/bookstore' },
 		{ path: '/bookstore', component: Bookstore },
+		{ path: '/bookshelf', component: Bookshelf },
 		{ path: '/weekHotMain', component: WeekHotMain },
 		{ path: '/channel', component: Channel },
 		{ path: '/timeFree', component: TimeFree },

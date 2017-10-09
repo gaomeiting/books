@@ -29,8 +29,10 @@ data() {
 		list: []
 	}
 },
-created() {
+
+activated() {
 	this._initedCategory();
+	console.log("activated")
 },
 computed: {
 	categorylist() {
@@ -49,6 +51,7 @@ methods: {
 		})
 	},
 	selectCategory(item) {
+		console.log(item)
 		this.setCurrentCategory(item)
 		this.$router.push(`/category/${item.category_id}`);
 	},

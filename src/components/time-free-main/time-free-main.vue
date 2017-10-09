@@ -8,9 +8,9 @@
 				<div v-for="(item, index) in list">
 					<div v-if="index % 2" class="time-free-list">
 						<hot-title :title="titles[index ]"></hot-title>
-						<book-list :bookList="item"></book-list>
+						<book-list :bookList="item" @selectBook="selectBook"></book-list>
 					</div>
-					<week-hot :list="item" :title="titles[index]" :hasFree="index==0" :checkMore="checkMore" v-else></week-hot>
+					<week-hot :list="item" :title="titles[index]" :hasFree="index==0" :checkMore="checkMore" @selectBook="selectBook" v-else></week-hot>
 				</div>
 				<loading v-show="loading"></loading>
 			</div>
@@ -28,9 +28,11 @@ import WeekHot from "components/week-hot/week-hot";
 import SeeMore from "components/see-more/see-more";
 import HotTitle from "components/hot-title/hot-title";
 import Loading from "base/loading/loading";
+import { selectCurrentBook } from "common/js/mixin";
 import { getTimeFree } from "api/bookstore";
 import { ERR_OK } from "api/config";
 export default {
+mixins:	[selectCurrentBook],
 data() {
 	return {
 		list: [],

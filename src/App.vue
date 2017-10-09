@@ -20,7 +20,16 @@ export default {
   },
   methods: {
     selectItem(i) {
-      this.currentIndex=i
+      if(i==this.currentIndex) return;
+      this.currentIndex=i;
+      switch(i) {
+        case 0:
+          this.$router.push('/bookstore');
+        break;
+        case 1:
+          this.$router.push('/bookshelf');
+        break;
+      }
     }
   },
   components: {

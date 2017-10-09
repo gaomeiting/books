@@ -6,7 +6,7 @@
 	<div>
 		<div v-for="item in list">
 			<hot-title :title="item.ad_name"></hot-title>
-			<book-list :bookList="item.data.data"></book-list>
+			<book-list :bookList="item.data.data" @selectBook="selectBook"></book-list>
 		</div>
 	</div>
 	</scroll>
@@ -20,10 +20,11 @@ import BookList from "components/book-list/book-list";
 import HotTitle from "components/hot-title/hot-title";
 import Scroll from "base/scroll/scroll";
 import {ERR_OK} from "api/config";
+import {selectCurrentBook} from "common/js/mixin";
 import {getChannel} from "api/bookstore";
 import {mapGetters} from "vuex";
 export default {
-
+mixins: [selectCurrentBook],
 data() {
 	return {
 		list : []
