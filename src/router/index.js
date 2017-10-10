@@ -10,6 +10,11 @@ const Bookshelf=(resolve =>{
 		resolve(module)
 	})
 })
+const Search=(resolve =>{
+	import('components/search/search').then((module)=> {
+		resolve(module)
+	})
+})
 const WeekHotMain=(resolve=>{
 	import('components/week-hot-main/week-hot-main').then( module=> {
 		resolve(module)
@@ -78,6 +83,7 @@ export default new Router({
 		{ path: '/', redirect: '/bookstore' },
 		{ path: '/bookstore', component: Bookstore },
 		{ path: '/bookshelf', component: Bookshelf },
+		{ path: '/search', component: Search },
 		{ path: '/weekHotMain', component: WeekHotMain },
 		{ path: '/channel', component: Channel },
 		{ path: '/timeFree', component: TimeFree },

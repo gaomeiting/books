@@ -2,7 +2,9 @@
 <transition name="fade" mode="out-in">
 <div class="bookshelf">
 	<div class="search-wrap">
-		<search-box placeholder="请输入书名/作者/关键字"></search-box>
+		<div class="box" @click.stop="goSearch">
+			<span>请输入书名/作者/关键字</span>
+		</div>
 		<i class="iconfont icon-caidan1" @click.stop="offList"></i>
 	</div>
 	<div class="bookshelf-con-wrap" v-show="load">
@@ -67,6 +69,9 @@ export default {
 				this.$refs.scroll.refresh()
 				this.$refs.scroll.scrollTo(0,0,0);
 			})
+		},
+		goSearch() {
+			this.$router.push('/search')
 		}
 	},
  	components: {
@@ -95,6 +100,17 @@ export default {
 		padding: 15px; 
 		display: flex;
 		align-items: center;
+
+		.box {
+			flex: 1;
+			height: 40px;
+			border: 1px solid $color-background-d;
+			span {
+				color: $color-text-d;
+				line-height: 40px;
+				padding-left: 10px;
+			}
+		}
 		i {
 			padding-left: 8px;
 		}

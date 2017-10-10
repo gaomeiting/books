@@ -2,7 +2,7 @@
 <transition name="fade" mode="out-in">
 <div class="bookstore">
 	<div class="search-wrap">
-		<i class="iconfont icon-sousuo"></i>
+		<i class="iconfont icon-sousuo" @click.stop="search"></i>
 		<!-- <search-box placeholder="请输入书名/作者/关键字"></search-box> -->
 	</div>
 	<div class="bookstore-con-wrap" v-show="load">
@@ -124,6 +124,9 @@ methods: {
 			this.$router.push('/rank');
 			break;
 		}
+	},
+	search() {
+		this.$router.push('/search')
 	},
 	_getBookstore() {
 		getBookstore().then((data)=>{

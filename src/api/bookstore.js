@@ -152,3 +152,27 @@ export function getBookshelfByIds(ids) {
 		return Promise.reject(err)
 	})
 }
+export function getSearchByKeys({start, count, s}) {
+	const url=`/store/v0/lib/query/onebox`
+	let data={
+		start,
+		count,
+		s
+	}
+	return axios(url, {
+		params: data
+	}).then(res=>{
+		return Promise.resolve(res.data);
+	}).catch(err=>{
+		return Promise.reject(err)
+	})
+}
+
+export function getSearchTags() {
+	const url='/api/search'
+	return axios(url).then(res=>{
+		return Promise.resolve(res.data);
+	}).catch(err=>{
+		return Promise.reject(err)
+	})
+}

@@ -12,12 +12,12 @@
 					<div class="text-wrap">
 						<h3>{{currentBook.title}}</h3>
 						<p>{{ currentBook.authors }}</p>
-						<p>
+						<p v-show="more">
 							<i class="iconfont" v-for="item in starCls" :class="item"></i>
 							<strong>{{ currentBook.score_count }}个评价</strong>
 						</p>
-						<p>价格：{{currentBook.price}}书币/千字</p>
-						<p>字数：{{wordCount(currentBook.word_count)}}
+						<p v-show="more">价格：{{currentBook.price}}书币/千字</p>
+						<p v-show="more">字数：{{wordCount(currentBook.word_count)}}
 							<span>{{ !currentBook.finish ? "连载中" : "完结"}}</span>
 						</p>
 					</div>
@@ -29,16 +29,14 @@
 				<p class="introduce ellipsis" @click.stop="hasEllipsis($event)">
 					 {{ content }} 
 				</p>
-				<div class="see-more-wrap">
+				<div class="see-more-wrap" v-show="more">
 					<see-more :more="more" @seeMore="seeMore"></see-more>
 				</div>
 			</div>
-			<div class="tags-wrap">
-				<h3>类别标签</h3>
-				<p>
-					<span v-for="tag in currentBook.tags">{{tag}}</span>
-				</p> 
+			<div class="book-wrap-tags">
+				<book-tags :tags="currentBook.tags" title="类别标签"></book-tags>
 			</div>
+			
 			<div class="author-books-wrap" v-if="list.length">
 				<h4>作者其它图书</h4>
 				<week-list :list="list"></week-list>
@@ -46,7 +44,7 @@
 					<see-more more="查看全部" @seeMore="seeMore"></see-more>
 				</div>
 			</div>
-			<div class="books-footer">
+			<div class="books-footer" v-show="more">
 				<h3>图书信息</h3>
 				<p>版权：{{currentBook.rights}}</p>
 			</div>
@@ -68,6 +66,7 @@ import HeadTitle from "components/title/title";
 import Scroll from "base/scroll/scroll";
 import SeeMore from "components/see-more/see-more";
 import WeekList from "components/week-list/week-list";
+import BookTags from "components/book-tags/book-tags";
 import BottomTip from "base/bottom-tip/bottom-tip";
 import {getBookDetail, startReadUrl } from "api/bookstore";
 import {ERR_OK} from "api/config";
@@ -96,6 +95,9 @@ activated() {
 computed: {
 	more() {
 		let time=formatDate(new Date(this.currentBook.updated*1000), "yyyy-MM-dd hh:mm")
+		if(!this.currentBook.latest) {
+			return ''
+		}
 		return '最新：'+ this.currentBook.latest + ' 更新于 '+time
 	},
 	starCls() {
@@ -166,7 +168,8 @@ components: {
 	Scroll,
 	SeeMore,
 	WeekList,
-	BottomTip
+	BottomTip,
+	BookTags
 }
 }
 </script>
@@ -258,46 +261,14 @@ components: {
 			}
 			.introduce {
 				padding: 0 15px;
+				margin-bottom: 15px;
 				&.ellipsis {
 					@include ellipsis(2);
 				}
 			}
 			
 		}
-		.tags-wrap {
-			padding: 0 15px;
-			border-bottom: 8px solid $color-background-d;
-			h3 {
-				font-size: $font-size-medium-x;
-				line-height: 1.5;
-				padding-top: 15px;
-				font-weight: bold;
-				color: $color-text-l;
-			}
-			p {
-				font-size: $font-size-medium;
-				color: $color-text-l;
-				display: flex;
-				flex-wrap: wrap;
-				padding-bottom: 20px;
-				span {
-					padding: 4px 16px;
-					border: 1px solid $color-background-d;
-					border-radius: 4px;
-					margin-right: 6px;
-					margin-top: 10px;
-					&:nth-of-type(3n+1) {
-						background-color: #fbebe8;
-					}
-					&:nth-of-type(3n+2) {
-						background-color: #fcedda;
-					}
-					&:nth-of-type(3n) {
-						background-color: #e8f9db;
-					}
-				}
-			}
-		}
+		
 		.books-footer {
 			padding: 10px 15px;
 			font-size: $font-size-medium-x;
@@ -305,6 +276,10 @@ components: {
 			line-height: 1.5;	
 			
 		} 
+		.book-wrap-tags {
+			padding: 0 15px;
+			border-bottom: 8px solid $color-background-d;
+		}
 		.author-books-wrap {
 			h4 {
 				padding: 10px 15px;

@@ -81,7 +81,6 @@ watch: {
 		if(index === -1) {
 			this.chapters.push(newVal)
 		}
-		console.log(newVal, "chapter改变了")
 	}
 },
 methods: {
@@ -124,7 +123,6 @@ methods: {
 		this.currentBgColor=index;
 	},
 	selectCurrentCatalog(item) {
-		console.log(item,"目录")
 		this.chapters=[];
 		let fiction_id=this.currentBook.fiction_id;
 		let {index}=this._checkCatchBook(fiction_id);
@@ -146,7 +144,6 @@ methods: {
 				break;
 			case 1:
 				this.fontFlag=!this.fontFlag
-				this.flag=false;
 				break;
 			case 2: 
 				if(this.settings[index].text=='白天') {
@@ -175,13 +172,10 @@ methods: {
 			return item.fiction_id===fiction_id
 		})
 		if(index!==-1) {
-			//console.log("找到目录")
 			if(!books[index].catalog) {
-				//console.log("获取目录")
 				getCatalog(fiction_id).then(res=>{
 					if(res.result===ERR_OK) {
 						this.catalogList=res.item.toc;
-						//console.log("目录是", this.catalogList)
 						let ret_book=Object.assign({}, books[index], {catalog: this.catalogList});
 						this.savedBookList(ret_book);
 					}
@@ -199,7 +193,6 @@ methods: {
 		}
 	},
 	_getCatalogs(fiction_id) {
-		//console.log(fiction_id)
 		getCatalog(fiction_id).then(res=>{
 			if(res.result===ERR_OK) {
 				return res.item.toc;
@@ -237,6 +230,9 @@ methods: {
 		if(this.flag) {
 			this.flag=false;
 		}
+		if(this.fontFlag) {
+			this.fontFlag=false;
+		}
 	},
 	_nextChapter() {
 		let fiction_id=this.currentBook.fiction_id;
@@ -258,7 +254,6 @@ methods: {
 			chapter_id=0;
 		}
 		else {
-			//console.log(index, "index")
 			chapter_id=this.books[index].chapter_id
 		}
 		return { index, chapter_id };
@@ -291,9 +286,7 @@ methods: {
 			if(item.fiction_id===fiction_id) {
 				bBtn=true;
 				//从缓存中读数据
-				console.log("缓存中读数据")
 				let book=CreateBook(item)
-				console.log(book)
 				this.parseCurrentChapter(book)
 				return false;
 			}

@@ -53,6 +53,19 @@ apiRoutes.get('/catalog', (req,res) => {
     console.log(err)
   })
 })
+apiRoutes.get('/search', (req,res) => {
+  axios.get(`http://dushu.xiaomi.com/store/v0/ad?key=df_search_tags&a=1`,{
+    headers: {
+      referer: 'http://dushu.xiaomi.com/',
+      host: 'dushu.xiaomi.com',
+      cookie:'Hm_lvt_a1d10542fc664b658c3ce982b1cf4937=1507519313,1507598919; Hm_lpvt_a1d10542fc664b658c3ce982b1cf4937=1507600477; app_id=mi_wap; build=8888; device_id=D950CIHJW00JX8FG; user_type=2; device_hash=73d11797853647042ab5a490a4ee3a4c'
+    }
+  }).then((response) => {
+    res.json(response.data)
+  }).catch((err) => {
+    console.log(err)
+  })
+})
 app.use('/api', apiRoutes)
 
 var devMiddleware = require('webpack-dev-middleware')(compiler, {

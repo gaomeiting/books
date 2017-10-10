@@ -1,4 +1,4 @@
-import {  getDownBook, ajaxDownBook, getCatalog } from "api/bookstore";
+import {  getDownBook, ajaxDownBook, getCatalog, getSearchByKeys } from "api/bookstore";
 import { Base64 } from "js-base64";
 import { uniqueArray } from "common/js/catch";
 import { mapGetters, mapActions, mapMutations } from "vuex";
@@ -174,13 +174,48 @@ export const bookContentMixin= {
 export const selectCurrentBook= {
 	methods: {
 		selectBook(item) {
-			this.$router.push('/bookDetail')
+
 			/*if(this.currentBook.fiction_id && item.fiction_id==this.currentBook.fiction_id) return;*/
 			this.setCurrentBook(item);
-			
+			console.log(item)
+			this.$router.push('/bookDetail')
 		},
 		...mapMutations({
 			'setCurrentBook': 'SET_CURRENT_BOOK'
 		})
+	}	
+}
+export const searchMixin= {
+	data() {
+		return {
+			load: true,
+			items: [],
+			start: 0,
+			count: 10,
+			more: false
+		}
+	},
+	methods: {
+		queryChange(s) {
+			this.query=s;
+			if(!s) {
+				this.load=false;
+
+				console.log(this.tags.length>0 && !this.query)
+				return;
+			}
+			this.load=false;
+			let params=Object.assign({},{start: this.start, count: this.count, s})
+			getSearchByKeys(params).then(res=>{
+				if(res.result===ERR_OK) {
+					this.items=this.items.concat(this._normalData(res.items));
+					this.load=true;
+					this.more=res.more;
+					this.noResult=res.items.length ? false : true;
+				}
+			}).catch(err=>{
+				console.log(err)
+			})
+		}
 	}	
 }

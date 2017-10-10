@@ -8,7 +8,7 @@
 			<h4>{{item.title}}</h4>
 			<p class="text">{{item.authors}}</p>
 			<p class="text">{{ item.summary }}</p>
-			<p class="tag">
+			<p class="tag" v-if="item.tags">
 				<span v-for="(tag,index) in item.tags" v-if="index<2">{{tag}}</span>
 				<span>{{ wordCount(item.word_count) }}</span>
 			</p>

@@ -3,7 +3,7 @@
 <div class="read-settings" v-if="flag">
 	<div class="setting-top">
 		<strong @click.stop="prevChapter">上一章</strong>
-		<span>1/6541</span>
+		<span><!-- 1/6541 --></span>
 		<strong @click.stop="nextChapter">下一章</strong>
 	</div>
 	<div class="setting-bot">
